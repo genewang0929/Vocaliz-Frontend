@@ -28,8 +28,8 @@ const ForgetPasswordPage = () => {
                 justifyContent="center"
                 alignItems="center"
             >
-                <Avatar bg="teal.500" />
-                <Heading color="teal.400">Forget Password</Heading>
+                <Avatar bg="blackAlpha.600" />
+                <Heading color="blackAlpha.700">Forget Password</Heading>
                 <Box minW={{ base: "90%", md: "468px" }}>
                     <form>
                         <Stack
@@ -45,14 +45,14 @@ const ForgetPasswordPage = () => {
                                         pointerEvents="none"
                                         children={<CFaUserAlt color="gray.300" />}
                                     />
-                                    <Input type="email" placeholder="Email" />
+                                    <Input type="email" placeholder="Email" focusBorderColor="black"/>
                                 </InputGroup>
                             </FormControl>
                             <Button
                                 borderRadius={6}
                                 type="submit"
                                 variant="solid"
-                                colorScheme="teal"
+                                colorScheme="blackAlpha"
                                 width="full"
                             >
                                 Send Code

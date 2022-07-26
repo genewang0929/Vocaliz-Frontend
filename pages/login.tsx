@@ -26,8 +26,8 @@ const LoginPage = () => {
                 justifyContent="center"
                 alignItems="center"
             >
-                <Avatar bg="teal.500" />
-                <Heading color="teal.400">Log in</Heading>
+                <Avatar bg="blackAlpha.600" />
+                <Heading color="blackAlpha.700">Log in</Heading>
                 <Box minW={{ base: "90%", md: "468px" }}>
                     <form>
                         <Stack
@@ -67,7 +67,7 @@ const LoginPage = () => {
                                 borderRadius={6}
                                 type="submit"
                                 variant="solid"
-                                colorScheme="teal"
+                                colorScheme="blackAlpha"
                                 width="full"
                             >
                                 Login

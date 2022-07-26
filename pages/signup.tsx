@@ -28,8 +28,8 @@ const SignUpPage = () => {
                 justifyContent="center"
                 alignItems="center"
             >
-                <Avatar bg="teal.500" />
-                <Heading color="teal.400">Sign up</Heading>
+                <Avatar bg="blackAlpha.600" />
+                <Heading color="blackAlpha.700">Sign up</Heading>
                 <Box minW={{ base: "90%", md: "468px" }}>
                     <form>
                         <Stack
@@ -90,7 +90,7 @@ const SignUpPage = () => {
                                 borderRadius={6}
                                 type="submit"
                                 variant="solid"
-                                colorScheme="teal"
+                                colorScheme="blackAlpha"
                                 width="full"
                             >
                                 Sign up

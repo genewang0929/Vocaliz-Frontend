@@ -1,11 +1,11 @@
 import {Navbar} from "../../components/navbar"
 
-const VocabularyPage = () => {
+const CategoryPage = () => {
     return (
         <div>
-            
+            This is Category page
         </div>
     )
 }
 
-export default VocabularyPage;
+export default CategoryPage;

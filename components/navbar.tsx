@@ -57,7 +57,11 @@ export const Navbar: React.FC = () => {
                   </MenuGroup>
                   <MenuDivider />
                   <MenuGroup>
-                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>View all</MenuItem>
+                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>
+                      <NextLink href='/category' passHref>
+                        <Link href={''}>View all categories</Link>
+                      </NextLink>
+                    </MenuItem>
                   </MenuGroup>
                 </MenuList>
               </Menu>
@@ -68,7 +72,7 @@ export const Navbar: React.FC = () => {
               <InputGroup>
                 <InputLeftElement
                   pointerEvents='none'
-                  children={<SearchIcon color={'blackAlpha'}/>}
+                  children={<SearchIcon color={'blackAlpha'} />}
                 />
                 <Input type='tel' bg={'blue.50'} placeholder='Search Vocabulary' _placeholder={{ color: 'blackAlpha' }} focusBorderColor={'white'} />
               </InputGroup>

@@ -3,16 +3,20 @@ import { Button, Center, Divider, Flex, FormControl, FormLabel, IconButton, Inpu
 import { Text } from "@chakra-ui/react"
 import React from "react";
 
-export const VocabCard: React.FC = () => {
+export const VocabCard: React.FC<{isView: boolean}> = (props) => {
     const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
     const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
+
+    const consoleView = () => {
+        props.isView ? console.log('viewed') : console.log(null);
+    }
 
     return (
         <Stack bg='white' p={4} m={2} width='100%' borderRadius='md' boxShadow={'Base'} direction='row' justify={'space-between'}>
             <Flex>
                 <Text fontSize={'xl'}>word</Text>
                 <Divider orientation="vertical" marginLeft={6} marginRight={6}></Divider>
-                <Text fontSize={'xl'}>中文解釋</Text>
+                {props.isView && <Text fontSize={'xl'}>中文解釋</Text>}
             </Flex>
             <Flex>
                 <Popover placement='top'>

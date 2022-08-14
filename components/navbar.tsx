@@ -30,8 +30,8 @@ export const Navbar: React.FC = () => {
   // const isDesktop = useBreakpointValue({ base: false, lg: true })
 
   return (
-    <Box as="section" pb={{ base: '12', md: '24' }}>
-      <Box as="nav" bg='teal.700' boxShadow={useColorModeValue('sm', 'sm-dark')}>
+    <Box as="section" >
+      <Box as="nav" boxShadow='md'>
         <Flex justify={'space-between'} p="3">
           <Flex flex={'flex-start'}>
             <HStack spacing={6}>
@@ -41,22 +41,23 @@ export const Navbar: React.FC = () => {
               </NextLink>
               <Menu closeOnSelect={false}>
                 <MenuButton
-                  transition='all 0.2s'
-                  _expanded={{ bg: 'teal.500', color: 'white' }}
-                  _focus={{ boxShadow: 'outline' }}
                   as={Button}
+                  colorScheme='blue'
+                  _expanded={{ bg: 'blue.600', color: 'white' }}
+                  _hover={{ bg: 'blue.600', color: 'white' }}
+                  _focus={{ boxShadow: 'outline' }}
                   rightIcon={<ChevronDownIcon />} >
                   Category
                 </MenuButton>
                 <MenuList minWidth='150px'>
                   <MenuGroup >
-                    <MenuItem _hover={{ bg: 'teal.500', color: 'white' }}>Category-1</MenuItem>
-                    <MenuItem _hover={{ bg: 'teal.500', color: 'white' }}>Category-2</MenuItem>
-                    <MenuItem _hover={{ bg: 'teal.500', color: 'white' }}>Category-3</MenuItem>
+                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-1</MenuItem>
+                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-2</MenuItem>
+                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-3</MenuItem>
                   </MenuGroup>
                   <MenuDivider />
                   <MenuGroup>
-                    <MenuItem _hover={{ bg: 'teal.500', color: 'white' }}>View all</MenuItem>
+                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>View all</MenuItem>
                   </MenuGroup>
                 </MenuList>
               </Menu>
@@ -67,25 +68,24 @@ export const Navbar: React.FC = () => {
               <InputGroup>
                 <InputLeftElement
                   pointerEvents='none'
-                  children={<SearchIcon />}
+                  children={<SearchIcon color={'blackAlpha'}/>}
                 />
-                <Input type='tel' bg={'teal.50'} placeholder='Search Vocabulary' _placeholder={{ color: 'blackAlpha' }} focusBorderColor={'white'} />
+                <Input type='tel' bg={'blue.50'} placeholder='Search Vocabulary' _placeholder={{ color: 'blackAlpha' }} focusBorderColor={'white'} />
               </InputGroup>
 
               <Menu>
                 <MenuButton
-                  transition='all 0.2s'
                   borderRadius={'50%'}
                   _focus={{ boxShadow: 'outline' }}>
                   <Avatar size='sm' />
                 </MenuButton>
                 <MenuList minWidth='150px'>
                   <MenuGroup>
-                    <MenuItem _hover={{ bg: 'teal.500', color: 'white' }}>Settings</MenuItem>
-                    <MenuItem _hover={{ bg: 'teal.500', color: 'white' }}>Guide</MenuItem>
-                    <MenuItem _hover={{ bg: 'teal.500', color: 'white' }}>About</MenuItem>
+                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Settings</MenuItem>
+                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Guide</MenuItem>
+                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>About</MenuItem>
                     <MenuDivider />
-                    <MenuItem _hover={{ bg: 'teal.500', color: 'white' }}>Logout</MenuItem>
+                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Logout</MenuItem>
                   </MenuGroup>
                 </MenuList>
               </Menu>

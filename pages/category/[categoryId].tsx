@@ -9,10 +9,15 @@ import { VocabCard } from "../../components/vocabCard";
 const VocabularyPage = () => {
     // const router = useRouter();
     // console.log(router.query);
+    const MAX_PAGE = 3;
+    const MIN_PAGE = 1;
+
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isRank, setRank] = useState(false);
     const [rankNum, setRankNum] = useState(1);
     const [isView, setView] = useState(false);
+    const [pageNum, setPageNum] = useState(1);
+    const [nextOrPrev, setNextOrPrev] = useState('');
 
     const toggleRank = () => {
         setRank(isRank => isRank = !isRank);
@@ -24,6 +29,16 @@ const VocabularyPage = () => {
 
     const toggleView = () => {
         setView(isView => isView = !isView);
+    }
+
+    const goToPage = (num: number) => {
+        if (num >= MIN_PAGE && num <= MAX_PAGE)
+            setPageNum(pageNum => pageNum = num);
+    }
+
+    const nextOrPrevPage = (isNext: boolean) => {
+        isNext ? goToPage(pageNum + 1) : goToPage(pageNum - 1);
+        isNext ? setNextOrPrev(nextOrPrev => nextOrPrev = 'next') : setNextOrPrev(nextOrPrev => nextOrPrev = 'prev')
     }
 
     return (
@@ -54,26 +69,29 @@ const VocabularyPage = () => {
 
                 {/* VocabList */}
                 <Flex p={6} m={4} width='50%' borderRadius='md' flexDir='column'>
-                    <VocabCard isView={isView}/>
-                    <VocabCard isView={isView}/>
-                    <VocabCard isView={isView}/>
-                    <VocabCard isView={isView}/>
-                    <VocabCard isView={isView}/>
-                    <VocabCard isView={isView}/>
+                    <VocabCard isView={isView} />
+                    <VocabCard isView={isView} />
+                    <VocabCard isView={isView} />
+                    <VocabCard isView={isView} />
+                    <VocabCard isView={isView} />
+                    <VocabCard isView={isView} />
                 </Flex>
 
                 {/* page */}
                 <Flex width='10%' justify={'space-evenly'} marginBottom={6}>
-                    <Button colorScheme={'transparent'} color='black'>
+                    <Button colorScheme={'transparent'} color='black' onClick={() => nextOrPrevPage(false)}>
                         <ChevronLeftIcon />
                     </Button>
-                    <Button colorScheme={'transparent'} color='black'>
+                    <Button colorScheme={(pageNum === 1) ? 'blue' : 'transparent'} color={(pageNum === 1) ? 'white' : 'black'} onClick={() => goToPage(1)}>
                         <Text>1</Text>
                     </Button>
-                    <Button colorScheme={'transparent'} color='black'>
+                    <Button colorScheme={(pageNum === 2) ? 'blue' : 'transparent'} color={(pageNum === 2) ? 'white' : 'black'} onClick={() => goToPage(2)}>
                         <Text>2</Text>
                     </Button>
-                    <Button colorScheme={'transparent'} color='black'>
+                    <Button colorScheme={(pageNum === 3) ? 'blue' : 'transparent'} color={(pageNum === 3) ? 'white' : 'black'} onClick={() => goToPage(3)}>
+                        <Text>3</Text>
+                    </Button>
+                    <Button colorScheme={'transparent'} color='black' onClick={() => nextOrPrevPage(true)}>
                         <ChevronRightIcon />
                     </Button>
                 </Flex>

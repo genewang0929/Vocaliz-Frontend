@@ -2,7 +2,7 @@ import { Box, Button, Center, Divider, Flex, FormControl, FormLabel, IconButton,
 import { useRouter } from "next/router";
 import { Navbar } from "../../components/navbar"
 import { Text } from "@chakra-ui/react";
-import { AddIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, StarIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { AddIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, QuestionIcon, StarIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { VocabCard } from "../../components/vocabCard";
 
@@ -15,21 +15,17 @@ const VocabularyPage = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isRank, setRank] = useState(false);
     const [rankNum, setRankNum] = useState(1);
-    const [isView, setView] = useState(false);
+    const [isView, setView] = useState(true);
     const [pageNum, setPageNum] = useState(1);
     const [nextOrPrev, setNextOrPrev] = useState('');
+    const router = useRouter();
 
-    const toggleRank = () => {
-        setRank(isRank => isRank = !isRank);
-    }
+    const toggleRank = () => setRank(isRank => isRank = !isRank);
 
-    const toggleRankNum = (num: number) => {
-        setRankNum(rankNum => rankNum = num);
-    }
+    const toggleRankNum = (num: number) => setRankNum(rankNum => rankNum = num);
 
-    const toggleView = () => {
-        setView(isView => isView = !isView);
-    }
+    const toggleView = () => setView(isView => isView = !isView);
+
 
     const goToPage = (num: number) => {
         if (num >= MIN_PAGE && num <= MAX_PAGE)
@@ -39,6 +35,11 @@ const VocabularyPage = () => {
     const nextOrPrevPage = (isNext: boolean) => {
         isNext ? goToPage(pageNum + 1) : goToPage(pageNum - 1);
         isNext ? setNextOrPrev(nextOrPrev => nextOrPrev = 'next') : setNextOrPrev(nextOrPrev => nextOrPrev = 'prev')
+    }
+
+    const goToTest = (e: React.MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+        router.push('/quiz')
     }
 
     return (
@@ -96,21 +97,10 @@ const VocabularyPage = () => {
                     </Button>
                 </Flex>
 
-                {/* Review | Quiz */}
-                <Menu closeOnSelect={false}>
-                    <MenuButton pos={'absolute'} top='155' left='250' as={Button} colorScheme='blue' _expanded={{ bg: 'blue.600', color: 'white' }} _hover={{ bg: 'blue.600', color: 'white' }} rightIcon={<ChevronDownIcon />}>
-                        Mode
-                    </MenuButton>
-                    <MenuList minWidth='150px'>
-                        <MenuOptionGroup defaultValue='asc' type='radio'>
-                            <MenuItemOption _hover={{ bg: 'blue.500', color: 'white' }} value='asc'>Review</MenuItemOption>
-                            <MenuItemOption _hover={{ bg: 'blue.500', color: 'white' }} value='desc'>Quiz</MenuItemOption>
-                        </MenuOptionGroup>
-                    </MenuList>
-                </Menu>
-
                 {/* Add a Word */}
-                <IconButton colorScheme='blue' size={'lg'} _hover={{ bg: 'blue.600' }} borderRadius={'50%'} bg={'blue.500'} icon={<AddIcon color={'white'} />} pos={'absolute'} top='250' left='300' aria-label={""} onClick={onOpen}></IconButton>
+                <Tooltip hasArrow label='Add word' placement='left-start' bg='white' color='black' fontWeight={'normal'}>
+                    <IconButton colorScheme='blue' size={'lg'} _hover={{ bg: 'blue.600' }} borderRadius={'50%'} bg={'blue.500'} icon={<AddIcon color={'white'} />} pos={'absolute'} top='210' left='300' aria-label={""} onClick={onOpen}></IconButton>
+                </Tooltip>
                 <Modal
                     isOpen={isOpen}
                     onClose={onClose}
@@ -155,8 +145,14 @@ const VocabularyPage = () => {
                 </Modal>
 
                 {/* View Words */}
-                {isView ? <IconButton colorScheme='blue' size={'lg'} _hover={{ bg: 'blue.600' }} borderRadius={'50%'} bg={'blue.500'} icon={<ViewIcon color={'white'} />} pos={'absolute'} top='320' left='300' aria-label={""} onClick={toggleView}></IconButton>
-                    : <IconButton colorScheme='blue' size={'lg'} _hover={{ bg: 'blue.600' }} borderRadius={'50%'} bg={'blue.500'} icon={<ViewOffIcon color={'white'} />} pos={'absolute'} top='320' left='300' aria-label={""} onClick={toggleView}></IconButton>}
+                <Tooltip hasArrow label='View words' placement='left-start' bg='white' color='black' fontWeight={'normal'}>
+                    {isView ? <IconButton colorScheme='blue' size={'lg'} _hover={{ bg: 'blue.600' }} borderRadius={'50%'} bg={'blue.500'} icon={<ViewIcon color={'white'} />} pos={'absolute'} top='280' left='300' aria-label={""} onClick={toggleView}></IconButton>
+                        : <IconButton colorScheme='gray' size={'lg'} _hover={{ bg: 'gray.600' }} borderRadius={'50%'} bg={'gray.500'} icon={<ViewOffIcon color={'white'} />} pos={'absolute'} top='280' left='300' aria-label={""} onClick={toggleView}></IconButton>}
+                </Tooltip>
+
+                <Tooltip hasArrow label='Take quiz' placement='left-start' bg='white' color='black' fontWeight={'normal'}>
+                    <IconButton colorScheme={'blue'} size={'lg'} _hover={{ bg: 'blue.600' }} borderRadius={'50%'} bg={'blue.500'} icon={<QuestionIcon />} pos={'absolute'} top='350' left='300' aria-label={""} onClick={goToTest}></IconButton>
+                </Tooltip>
             </Center>
         </div>
     )

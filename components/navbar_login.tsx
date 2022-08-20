@@ -26,7 +26,7 @@ import { FiMenu } from 'react-icons/fi'
 import { theme } from '@chakra-ui/react'
 
 
-export const Navbar: React.FC = () => {
+export const NavbarLogin: React.FC = () => {
   // const isDesktop = useBreakpointValue({ base: false, lg: true })
 
   return (
@@ -77,22 +77,6 @@ export const Navbar: React.FC = () => {
                 <Input type='tel' bg={'blue.50'} placeholder='Search Vocabulary' _placeholder={{ color: 'blackAlpha' }} focusBorderColor={'white'} />
               </InputGroup>
 
-              <Menu>
-                <MenuButton
-                  borderRadius={'50%'}
-                  _focus={{ boxShadow: 'outline' }}>
-                  <Avatar size='sm' />
-                </MenuButton>
-                <MenuList minWidth='150px'>
-                  <MenuGroup>
-                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Settings</MenuItem>
-                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Guide</MenuItem>
-                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>About</MenuItem>
-                    <MenuDivider />
-                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Logout</MenuItem>
-                  </MenuGroup>
-                </MenuList>
-              </Menu>
             </HStack>
           </Flex>
         </Flex>

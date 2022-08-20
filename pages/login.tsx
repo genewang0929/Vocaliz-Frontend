@@ -1,89 +1,43 @@
-import { Avatar, Box, Button, chakra, Flex, FormControl, FormHelperText, Heading, Input, InputGroup, InputLeftElement, InputRightElement, Link, Stack, useColorMode, useColorModeValue } from "@chakra-ui/react";
+import { Avatar, Box, Button, Center, chakra, Container, Flex, FormControl, FormHelperText, Heading, Input, InputGroup, InputLeftElement, InputRightElement, Link, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, useColorMode, useColorModeValue } from "@chakra-ui/react";
 import NextLink from "next/link"
 import { useState } from "react";
 import { FaLock, FaUserAlt } from "react-icons/fa";
+import { Navbar } from "../components/navbar";
+import { NavbarLogin } from "../components/navbar_login";
+import { Text } from "@chakra-ui/react";
+import { LoginForm } from "../components/loginForm";
+import { ForgetPassword } from "../components/forgetPassword";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 const LoginPage = () => {
-    const { toggleColorMode } = useColorMode();
-    const [showPassword, setShowPassword] = useState(false);
-    const handleShowClick = () => setShowPassword(showPassword => !showPassword);
+    const [textIsForgetPassword, setTextIsForgetPassword] = useState(false);
+    const handleChangeTextForgetPassword = () => setTextIsForgetPassword(textIsForgetPassword => textIsForgetPassword = !textIsForgetPassword);
 
     return (
-        <Flex
-            flexDirection="column"
-            width="100wh"
-            height="100vh"
-            backgroundColor="gray.200"
-            justifyContent="center"
-            alignItems="center"
-        >
-            <Stack
-                flexDir="column"
-                mb="2"
-                justifyContent="center"
-                alignItems="center"
-            >
-                <Avatar bg="blackAlpha.600" />
-                <Heading color="blackAlpha.700">Log in</Heading>
-                <Box minW={{ base: "90%", md: "468px" }}>
-                    <form>
-                        <Stack
-                            spacing={4}
-                            p="2rem"
-                            backgroundColor="whiteAlpha.900"
-                            boxShadow="md"
-                            borderRadius={6}
-                        >
-                            <FormControl>
-                                <InputGroup>
-                                    <InputLeftElement
-                                        pointerEvents="none"
-                                        children={<CFaUserAlt color="gray.300" />}
-                                    />
-                                    <Input type="email" placeholder="Email" />
-                                </InputGroup>
-                            </FormControl>
-                            <FormControl>
-                                <InputGroup>
-                                    <InputLeftElement
-                                        pointerEvents="none"
-                                        color="gray.300"
-                                        children={<CFaLock color="gray.300" />}
-                                    />
-                                    <Input
-                                        type={showPassword ? "text" : "password"}
-                                        placeholder="Password"
-                                    />
-                                    
-                                </InputGroup>
-                                <FormHelperText textAlign="right">
-                                    <NextLink href="/forget_password" passHref>forgot password?</NextLink>
-                                </FormHelperText>
-                            </FormControl>
-                            <Button
-                                borderRadius={6}
-                                type="submit"
-                                variant="solid"
-                                colorScheme="blackAlpha"
-                                width="full"
-                            >
-                                Login
-                            </Button>
-                        </Stack>
-                    </form>
-                </Box>
-            </Stack>
-            <Box>
-                New to us?{" "}
-                <NextLink href="/signup" passHref>
-                    Sign Up
-                </NextLink>
-            </Box>
-        </Flex>
-    );
+        <div>
+            <NavbarLogin />
+            <Center w='100%' minH='100vh' h='100%' bg={'blue.50'} flexDir='column'>
+                <Flex bg={'white'} p={6} width='80%' borderRadius={'md'} boxShadow='md' justify={'space-evenly'}>
+
+                    {/* Title */}
+                    <Flex flexDir={'column'} m={2} width='50%'>
+                        <Text fontSize={'6xl'} color='blue.700' fontWeight='black' lineHeight={1}>Memorize every vocabulary</Text>
+                        <Text fontSize={'xl'} color='blue.800' fontWeight='bold' mt={5}>
+                            Optimize your vocabulary-learning experience to the finest
+                        </Text>
+                    </Flex>
+
+                    {/* Login Form | Forget Password */}
+                    <Flex alignItems={'center'} justifyContent={'center'}>
+                        {!textIsForgetPassword && <LoginForm handleTextForgetPassword={handleChangeTextForgetPassword}/>}
+                        {textIsForgetPassword && <ForgetPassword handleTextForgetPassword={handleChangeTextForgetPassword}/>}
+                    </Flex>
+                </Flex>
+            </Center>
+        </div>
+    )
 }
 
 

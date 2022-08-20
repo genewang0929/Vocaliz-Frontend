@@ -51,7 +51,7 @@ export const PreTest: React.FC<{startTest: Function}> = (props) => {
                         <option value='option3'>30</option>
                     </Select>
                 </Flex>
-                <Button fontWeight='bold' colorScheme='blue' letterSpacing={'wider'} onClick={() => props.startTest}>
+                <Button fontWeight='bold' colorScheme='blue' letterSpacing={'wider'} onClick={() => props.startTest()}>
                     Start
                 </Button>
             </Flex>

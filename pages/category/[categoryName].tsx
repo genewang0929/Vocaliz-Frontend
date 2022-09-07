@@ -5,10 +5,13 @@ import { Text } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, QuestionIcon, StarIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 import { VocabCard } from "../../components/vocabCard";
+import { getAllCategories, getAllVocab } from "../../api/api_utils";
+import { GetStaticProps, GetStaticPaths, NextPage } from "next";
+import { VocabularyInterface } from "../../interface";
+import { InferGetStaticPropsType } from 'next'
 
-const VocabularyPage = () => {
-    // const router = useRouter();
-    // console.log(router.query);
+
+const VocabularyPage = ({ allVocabs }: InferGetStaticPropsType<typeof getStaticProps>) => {
     const MAX_PAGE = 3;
     const MIN_PAGE = 1;
 
@@ -70,13 +73,13 @@ const VocabularyPage = () => {
 
                 {/* VocabList */}
                 <Flex p={6} m={4} width='50%' borderRadius='md' flexDir='column'>
-                    <VocabCard isView={isView} />
-                    <VocabCard isView={isView} />
-                    <VocabCard isView={isView} />
-                    <VocabCard isView={isView} />
-                    <VocabCard isView={isView} />
-                    <VocabCard isView={isView} />
+                    {
+                        allVocabs.items.map((vocab: VocabularyInterface) =>
+                            <VocabCard key={vocab.id} isView={isView} word={vocab.word} definition={vocab.definition} />
+                        )
+                    }
                 </Flex>
+
 
                 {/* page */}
                 <Flex width='10%' justify={'space-evenly'} marginBottom={6}>
@@ -156,6 +159,29 @@ const VocabularyPage = () => {
             </Center>
         </div>
     )
+}
+
+export const getStaticProps: GetStaticProps = async (context) => {
+    const allVocabs = await getAllVocab();
+    return {
+        props: {
+            allVocabs: allVocabs,
+        }, // will be passed to the page component as props
+    }
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+    // const allCategories = await getAllCategories();
+    // const allPaths = allCategories.map(category => ({
+    //     params: {categoryId: category.id}
+    // }))
+    return {
+        // paths: allPaths,
+        paths: [
+            { params: { categoryName: 'Default' } }
+        ],
+        fallback: false
+    }
 }
 
 export default VocabularyPage;

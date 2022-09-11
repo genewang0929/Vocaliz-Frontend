@@ -2,17 +2,38 @@ import axios from "axios"
 import { CategoryInterface, VocabularyInterface } from "../interface";
 
 
-export const getAllVocab = async () => {
+export const getAllVocab = async (offset: number) => {
     let categoryId = '62da1c83b7234e30a3070cc3';
-    let offset = 0;
-    let pageNumber = 10;
 
     const response = await axios.get(
-        `http://localhost:8080/allWords/${categoryId}/${offset}/${pageNumber}`
+        `http://localhost:8080/allWords/${categoryId}/${offset}/10`
     );
     const allVocab = response.data.vocabulary;
+    const allVocabList = allVocab.items;
+    const vocabPages: number[] = [];
+    for (let i = 1; i <= allVocab.totalPages; i++)
+        vocabPages.push(i);
+    if (vocabPages.length === 0)
+        vocabPages.push(1);
 
-    return allVocab;
+    return { allVocabList, vocabPages };
+}
+
+export const getVocabByRankLV = async (offset: number, rankLV: number) => {
+    let categoryId = '62da1c83b7234e30a3070cc3';
+
+    const response = await axios.get(
+        `http://localhost:8080/rankLVWords/${categoryId}/${rankLV}/${offset}/10`
+    )
+    const vocabByRankLV = response.data.vocabulary;
+    const vocabByRankLVList = vocabByRankLV.items;
+    const vocabPages: number[] = [];
+    for (let i = 1; i <= vocabByRankLV.totalPages; i++)
+        vocabPages.push(i);
+    if (vocabPages.length === 0)
+        vocabPages.push(1);
+
+    return { vocabByRankLVList, vocabPages };
 }
 
 export const getAllCategories = async () => {
@@ -21,7 +42,7 @@ export const getAllCategories = async () => {
     const response = await axios.get(
         `http://localhost:8080/category/${email}`
     );
-    
+
     const allCategories: CategoryInterface[] = new Array();
     console.log(response.data);
 

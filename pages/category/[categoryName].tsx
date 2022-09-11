@@ -5,16 +5,13 @@ import { Text } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, QuestionIcon, StarIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { VocabCard } from "../../components/vocabCard";
-import { createVocab, deleteVocab, editVocab, editVocab as editWord, editVocabRankLV, getAllCategories, getAllVocab } from "../../api/api_utils";
+import { createVocab, deleteVocab, editVocab, editVocab as editWord, editVocabRankLV, getAllCategories, getAllVocab, getVocabByRankLV } from "../../api/api_utils";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { VocabularyInterface } from "../../interface";
 import { InferGetStaticPropsType } from 'next'
 
 
 const VocabularyPage = () => {
-    const MAX_PAGE = 3;
-    const MIN_PAGE = 1;
-
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isRank, setRank] = useState(false);
     const [rankNum, setRankNum] = useState(1);
@@ -23,55 +20,82 @@ const VocabularyPage = () => {
     const [nextOrPrev, setNextOrPrev] = useState('');
     const router = useRouter();
     const [vocabList, setVocabList] = useState<VocabularyInterface[]>([]);
-    const [totalPages, setTotalPages] = useState(1);
+    const [totalPages, setTotalPages] = useState<number[]>([]);
     const inputWord = useRef() as MutableRefObject<HTMLInputElement>; // input Word
     const inputDef = useRef() as MutableRefObject<HTMLInputElement>;  // input Definition
 
     const toggleRank = () => setRank(isRank => isRank = !isRank);
 
-    const toggleRankNum = (num: number) => setRankNum(rankNum => rankNum = num);
+    const toggleRankNum = (num: number) => {
+        setRankNum(rankNum => rankNum = num);
+        fetchVocabByRankLV(rankNum);
+    }
 
     const toggleView = () => setView(isView => isView = !isView);
 
-    const fetchVocab = async () => {
-        const allVocabs = await getAllVocab();
-        setVocabList(vocabList => vocabList = allVocabs.items);
-        setTotalPages(totalPages => totalPages = allVocabs.totalPages);
+    const fetchAllVocab = async () => {
+        const {allVocabList, vocabPages} = await getAllVocab(pageNum - 1);
+        setVocabList(vocabList => vocabList = allVocabList);
+        setTotalPages(totalPages => totalPages = vocabPages);
+    }
+
+    const fetchVocabByRankLV = async (rankLV: number) => {
+        const {vocabByRankLVList, vocabPages} = await getVocabByRankLV(pageNum - 1, rankLV);
+        setVocabList(vocabList => vocabList = vocabByRankLVList);
+        setTotalPages(totalPages => totalPages = vocabPages);
     }
 
     const deleteWord = async (wordId: string) => {
         await deleteVocab(wordId);
-        fetchVocab();
+
+        if (isRank === false)   // All Vocab
+            fetchAllVocab();
+        else
+            fetchVocabByRankLV(rankNum);
     }
 
     const addWord = async (word: string, definition: string) => {
         if (word !== '' && definition !== '') {
             await createVocab(word, definition);
-            fetchVocab();
+            fetchAllVocab();
 
             //clean up input field
             inputWord.current.value = '';
             inputDef.current.value = '';
+            // fetch all vocab
+            setRank(isRank => isRank = false);
+
             onClose();
         }
     }
 
     const editWord = async (wordId: string, word: string, definition: string) => {
         await editVocab(wordId, word, definition);
-        fetchVocab();
+
+        if (isRank === false)   // All Vocab
+            fetchAllVocab();
+        else
+            fetchVocabByRankLV(rankNum);
     }
 
     const editRankLV = async (wordId: string, rankLV: number) => {
         await editVocabRankLV(wordId, rankLV);
-        fetchVocab();
+
+        if (isRank === false)   // All Vocab
+            fetchAllVocab();
+        else
+            fetchVocabByRankLV(rankNum);
     }
 
     useEffect(() => {
-        fetchVocab();
-    }, [])
+        if (isRank === false)   // All Vocab
+            fetchAllVocab();
+        else
+            fetchVocabByRankLV(rankNum);
+    }, [rankNum, isRank, pageNum])
 
     const goToPage = (num: number) => {
-        if (num >= MIN_PAGE && num <= MAX_PAGE)
+        if (num >= 1 && num <= totalPages.length)
             setPageNum(pageNum => pageNum = num);
     }
 
@@ -136,15 +160,13 @@ const VocabularyPage = () => {
                     <Button colorScheme={'transparent'} color='black' onClick={() => nextOrPrevPage(false)}>
                         <ChevronLeftIcon />
                     </Button>
-                    <Button colorScheme={(pageNum === 1) ? 'blue' : 'transparent'} color={(pageNum === 1) ? 'white' : 'black'} onClick={() => goToPage(1)}>
-                        <Text>1</Text>
-                    </Button>
-                    <Button colorScheme={(pageNum === 2) ? 'blue' : 'transparent'} color={(pageNum === 2) ? 'white' : 'black'} onClick={() => goToPage(2)}>
-                        <Text>2</Text>
-                    </Button>
-                    <Button colorScheme={(pageNum === 3) ? 'blue' : 'transparent'} color={(pageNum === 3) ? 'white' : 'black'} onClick={() => goToPage(3)}>
-                        <Text>3</Text>
-                    </Button>
+                    {
+                        totalPages.map(num =>
+                            <Button colorScheme={(pageNum === num) ? 'blue' : 'transparent'} color={(pageNum === num) ? 'white' : 'black'} onClick={() => goToPage(num)}>
+                                <Text>{num}</Text>
+                            </Button>
+                        )
+                    }
                     <Button colorScheme={'transparent'} color='black' onClick={() => nextOrPrevPage(true)}>
                         <ChevronRightIcon />
                     </Button>

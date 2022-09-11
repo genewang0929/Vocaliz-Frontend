@@ -1,13 +1,14 @@
 import { DeleteIcon, EditIcon, Icon, StarIcon } from "@chakra-ui/icons"
 import { Button, Center, Divider, Flex, FormControl, FormLabel, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, Stack, Tooltip, useDisclosure } from "@chakra-ui/react"
 import { Text } from "@chakra-ui/react"
-import React, { MutableRefObject, useRef } from "react";
+import React, { MutableRefObject, useRef, useState } from "react";
 
 export const VocabCard: React.FC<{ isView: boolean, id: string, word: string, definition: string, rankLV: number, deleteWord: Function, editWord: Function, editRankLV: Function }> = (props) => {
     const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
     const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
     const inputWord = useRef() as MutableRefObject<HTMLInputElement>; // input Word
     const inputDef = useRef() as MutableRefObject<HTMLInputElement>;  // input Definition
+    const [rankLoading, setRankLoading] = useState(false);
 
     const handleDelete = () => {
         props.deleteWord(props.id);
@@ -30,6 +31,8 @@ export const VocabCard: React.FC<{ isView: boolean, id: string, word: string, de
             props.editRankLV(props.id, 2);
         if (e.currentTarget.value === 'rank_3')
             props.editRankLV(props.id, 3);
+
+        setRankLoading(rankLoading => rankLoading = true);
     }
 
     const rankLVColor = () => {
@@ -55,7 +58,7 @@ export const VocabCard: React.FC<{ isView: boolean, id: string, word: string, de
                 {/* Modify Rank */}
                 <Popover placement='top'>
                     <PopoverTrigger>
-                        <IconButton icon={<StarIcon color={rankLVColor}/>} aria-label={"rank"} bg='white'></IconButton>
+                        <IconButton icon={<StarIcon color={rankLVColor} />} aria-label={"rank"} bg='white'></IconButton>
                     </PopoverTrigger>
                     <PopoverContent>
                         <PopoverArrow />
@@ -63,16 +66,16 @@ export const VocabCard: React.FC<{ isView: boolean, id: string, word: string, de
                         <PopoverBody>
                             <Text>Change Rank: </Text>
                             <Tooltip hasArrow label='Rank 0' bg='white' color='black' fontWeight={'normal'}>
-                                <IconButton icon={<StarIcon />} aria-label={"rank_0"} bg='white' value={"rank_0"} onClick={handleChangeRankLV}></IconButton>
+                                <IconButton icon={<StarIcon />} aria-label={"rank_0"} bg='white' value={"rank_0"} isDisabled={rankLoading} onClick={handleChangeRankLV}></IconButton>
                             </Tooltip>
                             <Tooltip hasArrow label='Rank 1' bg='white' color='black' fontWeight={'normal'}>
-                                <IconButton icon={<StarIcon color={'yellow.300'} />} aria-label={"rank_1"} bg='white' value={"rank_1"} onClick={handleChangeRankLV}></IconButton>
+                                <IconButton icon={<StarIcon color={'yellow.300'} />} aria-label={"rank_1"} bg='white' value={"rank_1"} isDisabled={rankLoading} onClick={handleChangeRankLV}></IconButton>
                             </Tooltip>
                             <Tooltip hasArrow label='Rank 2' bg='white' color='black' fontWeight={'normal'}>
-                                <IconButton icon={<StarIcon color={'teal.500'} />} aria-label={"rank_2"} bg='white' value={"rank_2"} onClick={handleChangeRankLV}></IconButton>
+                                <IconButton icon={<StarIcon color={'teal.500'} />} aria-label={"rank_2"} bg='white' value={"rank_2"} isDisabled={rankLoading} onClick={handleChangeRankLV}></IconButton>
                             </Tooltip>
                             <Tooltip hasArrow label='Rank 3' bg='white' color='black' fontWeight={'normal'}>
-                                <IconButton icon={<StarIcon color={'red.500'} />} aria-label={"rank_3"} bg='white' value={"rank_3"} onClick={handleChangeRankLV}></IconButton>
+                                <IconButton icon={<StarIcon color={'red.500'} />} aria-label={"rank_3"} bg='white' value={"rank_3"} isDisabled={rankLoading} onClick={handleChangeRankLV}></IconButton>
                             </Tooltip>
                         </PopoverBody>
                     </PopoverContent>

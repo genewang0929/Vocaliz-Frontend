@@ -1,4 +1,4 @@
-import { Box, Button, Center, Divider, Flex, FormControl, FormLabel, IconButton, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuItemOption, MenuList, MenuOptionGroup, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Center, Collapse, Divider, Flex, FormControl, FormLabel, IconButton, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuItemOption, MenuList, MenuOptionGroup, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Skeleton, Spinner, Tooltip, useDisclosure } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { Navbar } from "../../components/navbar"
 import { Text } from "@chakra-ui/react";
@@ -23,6 +23,8 @@ const VocabularyPage = () => {
     const [totalPages, setTotalPages] = useState<number[]>([]);
     const inputWord = useRef() as MutableRefObject<HTMLInputElement>; // input Word
     const inputDef = useRef() as MutableRefObject<HTMLInputElement>;  // input Definition
+    const [isLoading, setIsLoading] = useState(false);
+    const [addButtonLoad, setAddButtonLoad] = useState(false);
 
     const toggleRank = () => setRank(isRank => isRank = !isRank);
 
@@ -34,13 +36,19 @@ const VocabularyPage = () => {
     const toggleView = () => setView(isView => isView = !isView);
 
     const fetchAllVocab = async () => {
-        const {allVocabList, vocabPages} = await getAllVocab(pageNum - 1);
+        setIsLoading(isLoading => isLoading = false);
+        const { allVocabList, vocabPages } = await getAllVocab(pageNum - 1);
+
+        setIsLoading(isLoading => isLoading = true);
         setVocabList(vocabList => vocabList = allVocabList);
         setTotalPages(totalPages => totalPages = vocabPages);
     }
 
     const fetchVocabByRankLV = async (rankLV: number) => {
-        const {vocabByRankLVList, vocabPages} = await getVocabByRankLV(pageNum - 1, rankLV);
+        setIsLoading(isLoading => isLoading = false);
+        const { vocabByRankLVList, vocabPages } = await getVocabByRankLV(pageNum - 1, rankLV);
+
+        setIsLoading(isLoading => isLoading = true);
         setVocabList(vocabList => vocabList = vocabByRankLVList);
         setTotalPages(totalPages => totalPages = vocabPages);
     }
@@ -56,6 +64,8 @@ const VocabularyPage = () => {
 
     const addWord = async (word: string, definition: string) => {
         if (word !== '' && definition !== '') {
+            setAddButtonLoad(addButtonLoad => addButtonLoad = true);
+
             await createVocab(word, definition);
             fetchAllVocab();
 
@@ -66,6 +76,7 @@ const VocabularyPage = () => {
             setRank(isRank => isRank = false);
 
             onClose();
+            setAddButtonLoad(addButtonLoad => addButtonLoad = false);
         }
     }
 
@@ -136,9 +147,9 @@ const VocabularyPage = () => {
                 }
 
                 {/* VocabList */}
-                <Flex p={6} m={4} width='50%' borderRadius='md' flexDir='column'>
-                    {
-                        vocabList.map((vocab: VocabularyInterface) =>
+                {isLoading ?
+                    <Flex p={6} m={4} width='50%' borderRadius='md' flexDir='column'>
+                        {vocabList.map((vocab: VocabularyInterface) =>
                             <VocabCard
                                 key={vocab.vocabularyId}
                                 isView={isView}
@@ -150,9 +161,18 @@ const VocabularyPage = () => {
                                 editWord={editWord}
                                 editRankLV={editRankLV}
                             />
-                        )
-                    }
-                </Flex>
+
+                        )}
+                    </Flex> :
+                    <Spinner
+                        m={20}
+                        thickness='4px'
+                        speed='0.75s'
+                        emptyColor='gray.200'
+                        color='blue.500'
+                        size='xl'
+                    />
+                }
 
 
                 {/* page */}
@@ -197,7 +217,7 @@ const VocabularyPage = () => {
                         </ModalBody>
 
                         <ModalFooter>
-                            <Button colorScheme='blue' mr={3} onClick={() => addWord(inputWord.current.value, inputDef.current.value)}>Save</Button>
+                            <Button colorScheme='blue' mr={3} isDisabled={addButtonLoad} onClick={() => addWord(inputWord.current.value, inputDef.current.value)}>Save</Button>
                             <Button onClick={onClose} variant='ghost'>Cancel</Button>
                         </ModalFooter>
                     </ModalContent>

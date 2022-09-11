@@ -3,15 +3,15 @@ import { useRouter } from "next/router";
 import { Navbar } from "../../components/navbar"
 import { Text } from "@chakra-ui/react";
 import { AddIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, QuestionIcon, StarIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { VocabCard } from "../../components/vocabCard";
-import { getAllCategories, getAllVocab } from "../../api/api_utils";
+import { createVocab, deleteVocab, editVocab, editVocab as editWord, editVocabRankLV, getAllCategories, getAllVocab } from "../../api/api_utils";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { VocabularyInterface } from "../../interface";
 import { InferGetStaticPropsType } from 'next'
 
 
-const VocabularyPage = ({ allVocabs }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const VocabularyPage = () => {
     const MAX_PAGE = 3;
     const MIN_PAGE = 1;
 
@@ -22,6 +22,10 @@ const VocabularyPage = ({ allVocabs }: InferGetStaticPropsType<typeof getStaticP
     const [pageNum, setPageNum] = useState(1);
     const [nextOrPrev, setNextOrPrev] = useState('');
     const router = useRouter();
+    const [vocabList, setVocabList] = useState<VocabularyInterface[]>([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const inputWord = useRef() as MutableRefObject<HTMLInputElement>; // input Word
+    const inputDef = useRef() as MutableRefObject<HTMLInputElement>;  // input Definition
 
     const toggleRank = () => setRank(isRank => isRank = !isRank);
 
@@ -29,6 +33,42 @@ const VocabularyPage = ({ allVocabs }: InferGetStaticPropsType<typeof getStaticP
 
     const toggleView = () => setView(isView => isView = !isView);
 
+    const fetchVocab = async () => {
+        const allVocabs = await getAllVocab();
+        setVocabList(vocabList => vocabList = allVocabs.items);
+        setTotalPages(totalPages => totalPages = allVocabs.totalPages);
+    }
+
+    const deleteWord = async (wordId: string) => {
+        await deleteVocab(wordId);
+        fetchVocab();
+    }
+
+    const addWord = async (word: string, definition: string) => {
+        if (word !== '' && definition !== '') {
+            await createVocab(word, definition);
+            fetchVocab();
+
+            //clean up input field
+            inputWord.current.value = '';
+            inputDef.current.value = '';
+            onClose();
+        }
+    }
+
+    const editWord = async (wordId: string, word: string, definition: string) => {
+        await editVocab(wordId, word, definition);
+        fetchVocab();
+    }
+
+    const editRankLV = async (wordId: string, rankLV: number) => {
+        await editVocabRankLV(wordId, rankLV);
+        fetchVocab();
+    }
+
+    useEffect(() => {
+        fetchVocab();
+    }, [])
 
     const goToPage = (num: number) => {
         if (num >= MIN_PAGE && num <= MAX_PAGE)
@@ -74,8 +114,18 @@ const VocabularyPage = ({ allVocabs }: InferGetStaticPropsType<typeof getStaticP
                 {/* VocabList */}
                 <Flex p={6} m={4} width='50%' borderRadius='md' flexDir='column'>
                     {
-                        allVocabs.items.map((vocab: VocabularyInterface) =>
-                            <VocabCard key={vocab.id} isView={isView} word={vocab.word} definition={vocab.definition} />
+                        vocabList.map((vocab: VocabularyInterface) =>
+                            <VocabCard
+                                key={vocab.vocabularyId}
+                                isView={isView}
+                                id={vocab.vocabularyId}
+                                word={vocab.word}
+                                definition={vocab.definition}
+                                rankLV={vocab.rankLV}
+                                deleteWord={deleteWord}
+                                editWord={editWord}
+                                editRankLV={editRankLV}
+                            />
                         )
                     }
                 </Flex>
@@ -113,35 +163,19 @@ const VocabularyPage = ({ allVocabs }: InferGetStaticPropsType<typeof getStaticP
                         <ModalHeader>Add Vocabulary</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody pb={6}>
-                            <FormControl>
+                            <FormControl isRequired>
                                 <FormLabel>Vocabulary</FormLabel>
-                                <Input placeholder="English" />
+                                <Input placeholder="English" name="word" ref={inputWord} />
                             </FormControl>
 
-                            <FormControl mt={4}>
+                            <FormControl mt={4} isRequired>
                                 <FormLabel>Definition</FormLabel>
-                                <Input placeholder="中文" />
-                            </FormControl>
-
-                            <FormControl mt={4}>
-                                <FormLabel>Set Rank</FormLabel>
-                                <Tooltip hasArrow label='Rank 0' bg='white' color='black' fontWeight={'normal'}>
-                                    <IconButton icon={<StarIcon />} aria-label={""} bg='white'></IconButton>
-                                </Tooltip>
-                                <Tooltip hasArrow label='Rank 1' bg='white' color='black' fontWeight={'normal'}>
-                                    <IconButton icon={<StarIcon color={'yellow.300'} />} aria-label={""} bg='white'></IconButton>
-                                </Tooltip>
-                                <Tooltip hasArrow label='Rank 2' bg='white' color='black' fontWeight={'normal'}>
-                                    <IconButton icon={<StarIcon color={'teal.500'} />} aria-label={""} bg='white'></IconButton>
-                                </Tooltip>
-                                <Tooltip hasArrow label='Rank 3' bg='white' color='black' fontWeight={'normal'}>
-                                    <IconButton icon={<StarIcon color={'red.500'} />} aria-label={""} bg='white'></IconButton>
-                                </Tooltip>
+                                <Input placeholder="中文" name="def" ref={inputDef} />
                             </FormControl>
                         </ModalBody>
 
                         <ModalFooter>
-                            <Button colorScheme='blue' mr={3}>Save</Button>
+                            <Button colorScheme='blue' mr={3} onClick={() => addWord(inputWord.current.value, inputDef.current.value)}>Save</Button>
                             <Button onClick={onClose} variant='ghost'>Cancel</Button>
                         </ModalFooter>
                     </ModalContent>
@@ -161,27 +195,18 @@ const VocabularyPage = ({ allVocabs }: InferGetStaticPropsType<typeof getStaticP
     )
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-    const allVocabs = await getAllVocab();
-    return {
-        props: {
-            allVocabs: allVocabs,
-        }, // will be passed to the page component as props
-    }
-}
-
-export const getStaticPaths: GetStaticPaths = async () => {
-    // const allCategories = await getAllCategories();
-    // const allPaths = allCategories.map(category => ({
-    //     params: {categoryId: category.id}
-    // }))
-    return {
-        // paths: allPaths,
-        paths: [
-            { params: { categoryName: 'Default' } }
-        ],
-        fallback: false
-    }
-}
+// export const getStaticPaths: GetStaticPaths = async () => {
+//     // const allCategories = await getAllCategories();
+//     // const allPaths = allCategories.map(category => ({
+//     //     params: {categoryId: category.id}
+//     // }))
+//     return {
+//         // paths: allPaths,
+//         paths: [
+//             { params: { categoryName: 'Default' } }
+//         ],
+//         fallback: false
+//     }
+// }
 
 export default VocabularyPage;

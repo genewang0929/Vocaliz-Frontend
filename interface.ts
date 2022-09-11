@@ -1,5 +1,5 @@
 export interface VocabularyInterface {
-    id: string;
+    vocabularyId: string;
     word: string;
     definition: string;
     rankLV: number;
@@ -8,7 +8,7 @@ export interface VocabularyInterface {
 }
 
 export interface CategoryInterface {
-    id: string;
+    categoryId: string;
     categoryName: string;
     vocabularies: string[];
     creatorEmail: string;

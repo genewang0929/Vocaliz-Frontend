@@ -3,12 +3,12 @@ import { Text } from "@chakra-ui/react"
 import { useRouter } from "next/router"
 import React from "react";
 
-export const CategoryCard: React.FC = () => {
+export const CategoryCard: React.FC<{categoryName: string}> = (props) => {
     const router = useRouter();
     
     const handleClick = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
-        router.push('/category/1')
+        router.push(`/category/${props.categoryName}`)
     }
 
     return (
@@ -22,7 +22,7 @@ export const CategoryCard: React.FC = () => {
             as={Button}
             _hover={{ bg: 'blue.400' }}
             onClick={handleClick}>
-            <Text fontSize='xl' fontWeight='bold'>Default</Text>
+            <Text fontSize='xl' fontWeight='bold'>{props.categoryName}</Text>
         </Stack>
     )
 }

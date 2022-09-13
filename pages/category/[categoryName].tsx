@@ -2,7 +2,7 @@ import { Box, Button, Center, Collapse, Divider, Flex, FormControl, FormLabel, I
 import { useRouter } from "next/router";
 import { Navbar } from "../../components/navbar"
 import { Text } from "@chakra-ui/react";
-import { AddIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, QuestionIcon, StarIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { AddIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, DeleteIcon, QuestionIcon, StarIcon, ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { VocabCard } from "../../components/vocabCard";
 import { createVocab, deleteVocab, editVocab, editVocab as editWord, editVocabRankLV, getAllCategories, getAllVocab, getVocabByRankLV } from "../../api/api_utils";
@@ -13,6 +13,7 @@ import { InferGetStaticPropsType } from 'next'
 
 const VocabularyPage = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
     const [isRank, setRank] = useState(false);
     const [rankNum, setRankNum] = useState(1);
     const [isView, setView] = useState(true);
@@ -229,6 +230,7 @@ const VocabularyPage = () => {
                         : <IconButton colorScheme='gray' size={'lg'} _hover={{ bg: 'gray.600' }} borderRadius={'50%'} bg={'gray.500'} icon={<ViewOffIcon color={'white'} />} pos={'absolute'} top='280' left='300' aria-label={""} onClick={toggleView}></IconButton>}
                 </Tooltip>
 
+                {/* Take Quiz */}
                 <Tooltip hasArrow label='Take quiz' placement='left-start' bg='white' color='black' fontWeight={'normal'}>
                     <IconButton colorScheme={'blue'} size={'lg'} _hover={{ bg: 'blue.600' }} borderRadius={'50%'} bg={'blue.500'} icon={<QuestionIcon />} pos={'absolute'} top='350' left='300' aria-label={""} onClick={goToTest}></IconButton>
                 </Tooltip>

@@ -1,6 +1,7 @@
 import axios from "axios"
 import { CategoryInterface, VocabularyInterface } from "../interface";
 
+/* -----------------Vocabulary APIs----------------- */
 
 export const getAllVocab = async (offset: number) => {
     let categoryId = '62da1c83b7234e30a3070cc3';
@@ -34,19 +35,6 @@ export const getVocabByRankLV = async (offset: number, rankLV: number) => {
         vocabPages.push(1);
 
     return { vocabByRankLVList, vocabPages };
-}
-
-export const getAllCategories = async () => {
-    let email = 'genewang7@gmail.com';
-
-    const response = await axios.get(
-        `http://localhost:8080/category/${email}`
-    );
-
-    const allCategories: CategoryInterface[] = new Array();
-    console.log(response.data);
-
-    return allCategories;
 }
 
 export const deleteVocab = async (wordId: string) => {
@@ -83,6 +71,32 @@ export const editVocabRankLV = async (wordId: string, rankLV: number) => {
         `http://localhost:8080/editRankLV/${wordId}`,
         {
             rankLV: rankLV
+        }
+    )
+}
+
+
+/* -----------------Category APIs----------------- */
+
+export const getAllCategories = async () => {
+    let email = 'genewang7@gmail.com';
+
+    const response = await axios.get(
+        `http://localhost:8080/category/allCategories/${email}`
+    );
+
+    console.log(response.data.categories);
+
+    return response.data.categories;
+}
+
+export const createCategory = async (categoryName: string) => {
+    let email = 'genewang7@gmail.com';
+
+    await axios.post(
+        `http://localhost:8080/category/${email}`,
+        {
+            categoryName: categoryName
         }
     )
 }

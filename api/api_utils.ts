@@ -85,8 +85,6 @@ export const getAllCategories = async () => {
         `http://localhost:8080/category/allCategories/${email}`
     );
 
-    console.log(response.data.categories);
-
     return response.data.categories;
 }
 
@@ -99,4 +97,17 @@ export const createCategory = async (categoryName: string) => {
             categoryName: categoryName
         }
     )
+}
+
+
+/* -----------------Quiz APIs----------------- */
+
+export const getQuizList = async (rankLV: number, wordNum: number) => {
+    let categoryId = '62da1c83b7234e30a3070cc3';
+
+    const response = await axios.get(
+        `http://localhost:8080/quizWords/${categoryId}?rankLV=${rankLV}&wordNum=${wordNum}`
+    )
+
+    return response.data.vocabulary;
 }

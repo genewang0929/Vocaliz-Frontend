@@ -1,20 +1,24 @@
 import { StarIcon } from "@chakra-ui/icons";
 import { Button, Center, Container, Flex, Select, Stack, useDisclosure } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { MutableRefObject, useRef, useState } from "react";
 import { Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 
-export const PreTest: React.FC<{startTest: Function}> = (props) => {
+export const PreTest: React.FC<{fetchQuizList: Function}> = (props) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isRank, setRank] = useState(false);
     const [rankNum, setRankNum] = useState(1);
-    const [isView, setView] = useState(false);
+    const wordNumRef = useRef() as MutableRefObject<HTMLSelectElement>;;
 
     const toggleRank = () => setRank(isRank => isRank = !isRank);
 
     const toggleRankNum = (num: number) => setRankNum(rankNum => rankNum = num);
 
-    const toggleView = () => setView(isView => isView = !isView);
+    const handleQuiz = (rankLV: number, wordNum: number) => {
+        if (!isRank)
+            rankLV = 0;
+        props.fetchQuizList(rankLV, wordNum);
+    }
 
     return (
         <Center bg='white' p={4} m={2} width='30%' borderRadius='xl' borderColor='black' boxShadow={'md'} flexDir='column'>
@@ -45,13 +49,13 @@ export const PreTest: React.FC<{startTest: Function}> = (props) => {
             <Flex p={2} m={6} flexDir='column'>
                 <Flex justifyContent='center' alignItems='center' marginBottom={4}>
                     <Text color={'blue.700'} fontSize='md' fontWeight='bold' marginRight={4}>Question number:</Text>
-                    <Select width='30%'>
+                    <Select width='30%' ref={wordNumRef}>
                         <option value='option1'>10</option>
                         <option value='option2'>20</option>
                         <option value='option3'>30</option>
                     </Select>
                 </Flex>
-                <Button fontWeight='bold' colorScheme='blue' letterSpacing={'wider'} onClick={() => props.startTest()}>
+                <Button fontWeight='bold' colorScheme='blue' letterSpacing={'wider'} onClick={() => handleQuiz(rankNum, parseInt(wordNumRef.current.value))}>
                     Start
                 </Button>
             </Flex>

@@ -24,10 +24,12 @@ import Link from 'next/link'
 import * as React from 'react'
 import { FiMenu } from 'react-icons/fi'
 import { theme } from '@chakra-ui/react'
+import { getAllCategories } from '../api/api_utils'
+import { CategoryInterface } from '../interface'
+import { useEffect } from 'react'
 
 
 export const Navbar: React.FC = () => {
-  // const isDesktop = useBreakpointValue({ base: false, lg: true })
 
   return (
     <Box as="section" >
@@ -39,6 +41,8 @@ export const Navbar: React.FC = () => {
               <NextLink href='/category' passHref>
                 Home
               </NextLink>
+
+              //TODO: use static generation
               <Menu closeOnSelect={false}>
                 <MenuButton
                   as={Button}
@@ -47,9 +51,9 @@ export const Navbar: React.FC = () => {
                   _hover={{ bg: 'blue.600', color: 'white' }}
                   _focus={{ boxShadow: 'outline' }}
                   rightIcon={<ChevronDownIcon />} >
-                  Category
+                  Categories
                 </MenuButton>
-                <MenuList minWidth='150px'>
+                <MenuList minWidth='130px'>
                   <MenuGroup >
                     <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-1</MenuItem>
                     <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-2</MenuItem>
@@ -59,7 +63,7 @@ export const Navbar: React.FC = () => {
                   <MenuGroup>
                     <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>
                       <NextLink href='/category' passHref>
-                        View all categories
+                        View all
                       </NextLink>
                     </MenuItem>
                   </MenuGroup>

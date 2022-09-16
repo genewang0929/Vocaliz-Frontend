@@ -1,5 +1,4 @@
 import axios from "axios"
-import { CategoryInterface, VocabularyInterface } from "../interface";
 
 /* -----------------Vocabulary APIs----------------- */
 
@@ -96,6 +95,21 @@ export const createCategory = async (categoryName: string) => {
         {
             categoryName: categoryName
         }
+    )
+}
+
+export const renameCategory = async (categoryName: string, categoryId: string) => {
+    await axios.put(
+        `http://localhost:8080/category/rename/${categoryId}`,
+        {
+            newCategoryName: categoryName
+        }
+    )
+}
+
+export const deleteACategory = async (categoryId: string) => {
+    await axios.delete(
+        `http://localhost:8080/category/${categoryId}`
     )
 }
 

@@ -1,18 +1,20 @@
-import { Button, Center, CloseButton, Flex, IconButton } from "@chakra-ui/react";
+import { Button, Center, CloseButton, Flex, IconButton, Spinner } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { Navbar } from "../components/navbar"
 import { SearchCard } from "../components/search-card";
 import { Text } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getSearchList } from "../api/api_utils";
+import { VocabularyInterface } from "../interface";
 
 const SearchPage = () => {
-    const MAX_PAGE = 3;
-    const MIN_PAGE = 1;
-
     const router = useRouter();
     const [pageNum, setPageNum] = useState(1);
     const [nextOrPrev, setNextOrPrev] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [searchedList, setSearchedList] = useState<VocabularyInterface[]>([]);
+    const [totalPages, setTotalPages] = useState<number[]>([]);
 
     const handleClose = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
@@ -20,7 +22,7 @@ const SearchPage = () => {
     }
 
     const goToPage = (num: number) => {
-        if (num >= MIN_PAGE && num <= MAX_PAGE)
+        if (num >= 1 && num <= totalPages.length)
             setPageNum(pageNum => pageNum = num);
     }
 
@@ -29,6 +31,19 @@ const SearchPage = () => {
         isNext ? setNextOrPrev(nextOrPrev => nextOrPrev = 'next') : setNextOrPrev(nextOrPrev => nextOrPrev = 'prev')
     }
 
+    const fetchSearch = async (vocab: string) => {
+        setIsLoading(isLoading => isLoading = false);
+        const { searchedVocabList, vocabPages } = await getSearchList(0, vocab);
+
+        setIsLoading(isLoading => isLoading = true);
+        setSearchedList(searchedList => searchedList = searchedVocabList);
+        setTotalPages(totalPages => totalPages = vocabPages);
+    }
+
+    useEffect(() => {
+        fetchSearch(router.query.word as string);
+    }, [])
+
     return (
         <div>
             <Navbar />
@@ -36,11 +51,24 @@ const SearchPage = () => {
                 {/* SearchCard */}
                 <Center p={6} m={4} width='70%' borderRadius='md' flexDir='column'>
                     <Text letterSpacing={'wide'} m={6} fontSize={'2xl'} fontWeight='bold' color={'blue.700'}>Search Result</Text>
-                    <SearchCard />
-                    <SearchCard />
-                    <SearchCard />
-                    <SearchCard />
-                    <SearchCard />
+                    {isLoading ?
+                        searchedList.map((searchedWord: VocabularyInterface) =>
+                            //TODO: Change parentCategoryId => parentCategoryName
+                            <SearchCard
+                                word={searchedWord.word}
+                                definition={searchedWord.definition}
+                                parentCategory={searchedWord.parentCategory}
+                            />
+                        ) :
+                        <Spinner
+                            m={20}
+                            thickness='4px'
+                            speed='0.75s'
+                            emptyColor='gray.200'
+                            color='blue.500'
+                            size='xl'
+                        />
+                    }
                 </Center>
 
                 {/* page */}
@@ -48,15 +76,13 @@ const SearchPage = () => {
                     <Button colorScheme={'transparent'} color='black' onClick={() => nextOrPrevPage(false)}>
                         <ChevronLeftIcon />
                     </Button>
-                    <Button colorScheme={(pageNum === 1) ? 'blue' : 'transparent'} color={(pageNum === 1) ? 'white' : 'black'} onClick={() => goToPage(1)}>
-                        <Text>1</Text>
-                    </Button>
-                    <Button colorScheme={(pageNum === 2) ? 'blue' : 'transparent'} color={(pageNum === 2) ? 'white' : 'black'} onClick={() => goToPage(2)}>
-                        <Text>2</Text>
-                    </Button>
-                    <Button colorScheme={(pageNum === 3) ? 'blue' : 'transparent'} color={(pageNum === 3) ? 'white' : 'black'} onClick={() => goToPage(3)}>
-                        <Text>3</Text>
-                    </Button>
+                    {
+                        totalPages.map(num =>
+                            <Button colorScheme={(pageNum === num) ? 'blue' : 'transparent'} color={(pageNum === num) ? 'white' : 'black'} onClick={() => goToPage(num)}>
+                                <Text>{num}</Text>
+                            </Button>
+                        )
+                    }
                     <Button colorScheme={'transparent'} color='black' onClick={() => nextOrPrevPage(true)}>
                         <ChevronRightIcon />
                     </Button>

@@ -111,3 +111,24 @@ export const getQuizList = async (rankLV: number, wordNum: number) => {
 
     return response.data.vocabulary;
 }
+
+
+/* -----------------Search APIs----------------- */
+
+export const getSearchList = async (offset: number, vocab: string) => {
+    let email = 'genewang7@gmail.com';
+
+    const response = await axios.get(
+        `http://localhost:8080/search/${email}/${offset}/10?word=${vocab}`
+    )
+
+    const searchedVocab = response.data.vocabulary;
+    const searchedVocabList = searchedVocab.items;
+    const vocabPages: number[] = [];
+    for (let i = 1; i <= searchedVocab.totalPages; i++)
+        vocabPages.push(i);
+    if (vocabPages.length === 0)
+        vocabPages.push(1);
+
+    return { searchedVocabList, vocabPages };
+}

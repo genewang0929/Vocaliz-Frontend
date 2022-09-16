@@ -13,6 +13,7 @@ export const InTest: React.FC<{ quizList: VocabularyInterface[], updateWrongAnsL
     const [showAlert, setShowAlert] = useState(false);  // show corrrect/incorrect alert
     const [nextDisable, setNextDisable] = useState(false);
     const [countDown, setCountDown] = useState(5);
+    let countDownNum = 5;
     const interval: {current: NodeJS.Timeout | null} = useRef(null);
 
     const handleAns = (inputAns: string) => {
@@ -46,13 +47,13 @@ export const InTest: React.FC<{ quizList: VocabularyInterface[], updateWrongAnsL
             inputDef.current.value = '';
             setQNum(qNum => qNum = qNum + 1);
             setCountDown(countDown => countDown = 5);
+            countDownNum = 5;
         }, 1000)
     }
 
     const startTimer = () => {
         interval.current = setInterval(() => {
-            //TODO: Fix countDown === 0
-            if (countDown === 0) {
+            if (countDownNum === 0) {
                 clearInterval(interval.current as NodeJS.Timeout);
                 setShowAlert(showAlert => showAlert = true);
                 setAnsCorrect(ansCorrect => ansCorrect = false);
@@ -66,8 +67,8 @@ export const InTest: React.FC<{ quizList: VocabularyInterface[], updateWrongAnsL
                     }, 2000);
                 }
             } else {
-                console.log(countDown);
-                setCountDown(countDown => countDown = countDown - 1)
+                countDownNum--;
+                setCountDown(countDown => countDown = countDown - 1);
             }
         }, 1000);
     }

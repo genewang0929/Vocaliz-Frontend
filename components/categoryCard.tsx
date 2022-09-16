@@ -1,14 +1,18 @@
 import { ChevronDownIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import { Button, Center, Flex, FormControl, FormLabel, HStack, Input, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, useDisclosure, VStack } from "@chakra-ui/react"
+import { Button, Center, Flex, FormControl, FormHelperText, FormLabel, HStack, Input, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, useDisclosure, VStack } from "@chakra-ui/react"
 import { Text } from "@chakra-ui/react"
 import { useRouter } from "next/router"
 import React, { MutableRefObject, useRef, useState } from "react";
+import { CategoryInterface } from "../interface";
 
-export const CategoryCard: React.FC<{ categoryId: string, categoryName: string, editCategory: Function, deleteCategory: Function }> = (props) => {
+export const CategoryCard: React.FC<{ categoryId: string, categoryName: string, editCategory: Function, deleteCategory: Function, checkDuplicate: Function }> = (props) => {
     const router = useRouter();
     const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
     const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
     const inputCategory = useRef() as MutableRefObject<HTMLInputElement>; // input Word
+    const [showAlert, setShowAlert] = useState(false);  // show duplicate category name alert
+    const [isError, setIsError] = useState(false);
+    
 
     const handleClick = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
@@ -16,8 +20,17 @@ export const CategoryCard: React.FC<{ categoryId: string, categoryName: string, 
     }
 
     const handleEdit = (categoryName: string) => {
-        props.editCategory(categoryName, props.categoryId);
-        onCloseEdit();
+        if (!props.checkDuplicate(categoryName)) {
+            setIsError(isError => isError = false);
+            setShowAlert(showAlert => showAlert = false);
+            props.editCategory(categoryName, props.categoryId)
+            onCloseEdit();
+        }
+        else {
+            setIsError(isError => isError = true);
+            setShowAlert(showAlert => showAlert = true);
+        }
+
     }
 
     const handleDelete = () => {
@@ -57,12 +70,18 @@ export const CategoryCard: React.FC<{ categoryId: string, categoryName: string, 
                                     <FormControl mt={4}>
                                         <FormLabel>Category Name</FormLabel>
                                         <Input defaultValue={props.categoryName} ref={inputCategory} />
+                                        {
+                                            (isError && showAlert) &&
+                                            <FormHelperText color={'red'}>
+                                                Category name already exists!
+                                            </FormHelperText>
+                                        }
                                     </FormControl>
                                 </ModalBody>
 
                                 <ModalFooter>
                                     <Button mr={3} colorScheme='blue' onClick={() => handleEdit(inputCategory.current.value)}>
-                                        Add
+                                        Save
                                     </Button>
                                     <Button variant='ghost' onClick={onCloseEdit}>Cancel</Button>
                                 </ModalFooter>

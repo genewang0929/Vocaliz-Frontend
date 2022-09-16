@@ -1,4 +1,4 @@
-import { Box, Button, Center, Flex, FormControl, FormLabel, Grid, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Stack, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, FormControl, FormHelperText, FormLabel, Grid, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Stack, Tooltip, useDisclosure } from "@chakra-ui/react";
 import { Navbar } from "../../components/navbar"
 import { Text } from "@chakra-ui/react";
 import { CategoryCard } from "../../components/categoryCard";
@@ -12,8 +12,9 @@ const CategoryPage = () => {
     const [categoryList, setCategoryList] = useState<CategoryInterface[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [addButtonLoad, setAddButtonLoad] = useState(false);
-    // const [editButtonLoad, setEditButtonLoad] = useState(false);
-    // const [deleteButtonLoad, setDeleteButtonLoad] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);  // show duplicate category name alert
+    const [isError, setIsError] = useState(false);
+    let error = false;
     const inputCategory = useRef() as MutableRefObject<HTMLInputElement>; // input Word
 
     const fetchAllCategories = async () => {
@@ -24,17 +25,33 @@ const CategoryPage = () => {
         setCategoryList(categoryList => categoryList = allCategories);
     }
 
+    const checkDuplicate = (categoryName: string) => {
+        error = false;
+        setIsError(isError => isError = false);
+        setShowAlert(showAlert => showAlert = false);
+        for (let i = 0; i < categoryList.length; i++) {
+            if (categoryList[i].categoryName === categoryName) {
+                error = true;
+                setIsError(isError => isError = true);
+                setShowAlert(showAlert => showAlert = true);
+            }
+        }
+
+        return error;   // true if found duplicate
+    }
+
     const addCategory = async (categoryName: string) => {
         if (categoryName !== '') {
-
-            setAddButtonLoad(addButtonLoad => addButtonLoad = true);
-            await createCategory(categoryName);
-            fetchAllCategories();
-
-            //clean up
-            inputCategory.current.value = '';
-            onClose();
-            setAddButtonLoad(addButtonLoad => addButtonLoad = false);
+            // check duplicate category name
+            if (!checkDuplicate(categoryName)) {
+                setAddButtonLoad(addButtonLoad => addButtonLoad = true);
+                await createCategory(categoryName);
+                fetchAllCategories();
+                //clean up
+                inputCategory.current.value = '';
+                onClose();
+                setAddButtonLoad(addButtonLoad => addButtonLoad = false);
+            }
         }
     }
 
@@ -71,6 +88,7 @@ const CategoryPage = () => {
                                     categoryName={category.categoryName}
                                     editCategory={editCategory}
                                     deleteCategory={deleteCategory}
+                                    checkDuplicate={checkDuplicate}
                                 />
                             )
                         }
@@ -86,8 +104,7 @@ const CategoryPage = () => {
                             as={Button}
                             _hover={{ bg: 'blue.200' }}
                             onClick={onOpen}>
-                            {/* <Text fontSize='5xl' fontWeight='bold'>+</Text> */}
-                            <AddIcon fontSize={'xl'}/>
+                            <AddIcon fontSize={'xl'} />
                         </Stack>
                         <Modal isOpen={isOpen} onClose={onClose}>
                             <ModalOverlay />
@@ -98,6 +115,12 @@ const CategoryPage = () => {
                                     <FormControl mt={4}>
                                         <FormLabel>Category Name</FormLabel>
                                         <Input placeholder="Category Name" ref={inputCategory} />
+                                        {
+                                            (isError && showAlert) &&
+                                            <FormHelperText color={'red'}>
+                                                Category name already exists!
+                                            </FormHelperText>
+                                        }
                                     </FormControl>
                                 </ModalBody>
 

@@ -7,13 +7,14 @@ import { NavbarLogin } from "../components/navbar_login";
 import { Text } from "@chakra-ui/react";
 import { LoginForm } from "../components/loginForm";
 import { ForgetPassword } from "../components/forgetPassword";
+import { VerifyCode } from "../components/verifyCode";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 const LoginPage = () => {
-    const [textIsForgetPassword, setTextIsForgetPassword] = useState(false);
-    const handleChangeTextForgetPassword = () => setTextIsForgetPassword(textIsForgetPassword => textIsForgetPassword = !textIsForgetPassword);
+    const [switchPage, setSwitchPage] = useState('login');
+    const handlePageSwitch = (page: string) => setSwitchPage(switchPage => switchPage = page);
 
     return (
         <div>
@@ -31,8 +32,9 @@ const LoginPage = () => {
 
                     {/* Login Form | Forget Password */}
                     <Flex alignItems={'center'} justifyContent={'center'}>
-                        {!textIsForgetPassword && <LoginForm handleTextForgetPassword={handleChangeTextForgetPassword}/>}
-                        {textIsForgetPassword && <ForgetPassword handleTextForgetPassword={handleChangeTextForgetPassword}/>}
+                        {(switchPage === 'login') && <LoginForm handlePageSwitch={handlePageSwitch}/>}
+                        {(switchPage === 'forgotPassword') && <ForgetPassword handlePageSwitch={handlePageSwitch}/>}
+                        {(switchPage === 'verifyCode') && <VerifyCode handlePageSwitch={handlePageSwitch}/>}
                     </Flex>
                 </Flex>
             </Center>

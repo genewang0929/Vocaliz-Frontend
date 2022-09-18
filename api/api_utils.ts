@@ -146,3 +146,58 @@ export const getSearchList = async (offset: number, vocab: string) => {
 
     return { searchedVocabList, vocabPages };
 }
+
+
+/* -----------------Verification APIs----------------- */
+
+export const signUp = async (email: string, password: string, name: string) => {
+    await axios.post(
+        `http://localhost:8080/verification/signup`,
+        {
+            email: email,
+            password: password,
+            name: name
+        }
+    )
+}
+
+export const verifyCode = async (email: string, code: string) => {
+    await axios.put(
+        `http://localhost:8080/verification/verify/${email}/${code}`
+    )
+}
+
+export const resendCodeMail = async (email: string) => {
+    await axios.post(
+        `http://localhost:8080/verification/resendCode/${email}`
+    )
+}
+
+
+export const login = async (email: string, password: string) => {
+    const response = await axios.post(
+        `http://localhost:8080/verification/login`, 
+        {
+            email: email,
+            password: password
+        }
+    )
+    return response.data;
+}
+
+export const forgotPassword = async (email: string) => {
+    const response = await axios.post(
+        `http://localhost:8080/verification/randomPassword/${email}`
+    )
+}
+
+export const resetPassword = async (password: string, newPassword: string, email: string) => {
+    await axios.post(
+        `http://localhost:8080/verification/resetPassword`,
+        {
+            password: password,
+            newPassword: newPassword,
+            email: email
+        }
+    )
+}

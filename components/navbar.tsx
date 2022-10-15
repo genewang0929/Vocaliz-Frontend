@@ -1,5 +1,5 @@
 import { ChevronDownIcon, SearchIcon } from '@chakra-ui/icons'
-import { FormControl, MenuGroup, Stack } from '@chakra-ui/react'
+import { FormControl, MenuGroup, Spinner, Stack } from '@chakra-ui/react'
 import { Menu, MenuButton, MenuList, MenuOptionGroup, MenuItemOption, MenuDivider } from '@chakra-ui/react'
 import { ChakraProvider } from '@chakra-ui/react'
 import { MenuItem } from '@chakra-ui/react'
@@ -32,7 +32,9 @@ import { Text } from '@chakra-ui/react'
 
 export const Navbar: React.FC = () => {
   const inputWord = React.useRef() as React.MutableRefObject<HTMLInputElement>; // input Word
-  
+  const [categoryList, setCategoryList] = React.useState<CategoryInterface[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const handleSearch = (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
     Router.push(
@@ -43,18 +45,39 @@ export const Navbar: React.FC = () => {
     )
   }
 
+  const handleClickCategory = async () => {
+    setIsLoading(isLoading => isLoading = false);
+    const allCategories = await getAllCategories();
+
+    setIsLoading(isLoading => isLoading = true);
+    setCategoryList(categoryList => categoryList = allCategories);
+
+  }
+
+  const switchToVocabPage = (e: React.MouseEvent<HTMLElement>, page: string) => {
+    e.preventDefault();
+    Router.push(
+      {
+        pathname: `/category/${page}`
+      }
+    )
+  }
+
+  useEffect(() => {
+    handleClickCategory();
+  }, [])
+
   return (
     <Box as="section" >
       <Box as="nav" boxShadow='md'>
         <Flex justify={'space-between'} p="3" pr={10} pl={10}>
           <Flex flex={'flex-start'}>
             <HStack spacing={6}>
-            <Text fontSize={'3xl'} fontWeight='extrabold' fontFamily='heading' _hover={{ cursor: 'pointer' }} userSelect='none'>Vocaliz</Text>
+              <Text fontSize={'3xl'} fontWeight='extrabold' fontFamily='heading' _hover={{ cursor: 'pointer' }} userSelect='none'>Vocaliz</Text>
               <NextLink href='/category' passHref>
                 Home
               </NextLink>
 
-              //TODO: use static generation
               <Menu closeOnSelect={false}>
                 <MenuButton
                   as={Button}
@@ -67,9 +90,16 @@ export const Navbar: React.FC = () => {
                 </MenuButton>
                 <MenuList minWidth='130px'>
                   <MenuGroup >
-                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-1</MenuItem>
+                    {
+                      (categoryList.length === 0) ?
+                        <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}><Spinner /></MenuItem> :
+                        categoryList.map((category: CategoryInterface) =>
+                          <MenuItem _hover={{ bg: 'blue.500', color: 'white' }} onClick={(e) => switchToVocabPage(e, category.categoryName)}>{category.categoryName}</MenuItem>
+                        )
+                    }
+                    {/* <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-1</MenuItem>
                     <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-2</MenuItem>
-                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-3</MenuItem>
+                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-3</MenuItem> */}
                   </MenuGroup>
                   <MenuDivider />
                   <MenuGroup>

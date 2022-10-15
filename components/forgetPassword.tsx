@@ -17,7 +17,7 @@ export const ForgetPassword: React.FC<{ handlePageSwitch: Function }> = (props) 
     const handleForgotPassword = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
 
-        if (inputEmail.current.value === '') {
+        if (inputEmail.current.value === undefined && inputEmail.current.value === '') {
             toast({
                 title: 'Please enter email.',
                 status: 'error',
@@ -63,7 +63,7 @@ export const ForgetPassword: React.FC<{ handlePageSwitch: Function }> = (props) 
                                 pointerEvents="none"
                                 children={<CFaUserAlt color="gray.300" />}
                             />
-                            <Input type="email" placeholder="Email" focusBorderColor="black" />
+                            <Input type="email" placeholder="Email" focusBorderColor="black" ref={inputEmail}/>
                         </InputGroup>
                     </FormControl>
                     <Button
@@ -72,12 +72,14 @@ export const ForgetPassword: React.FC<{ handlePageSwitch: Function }> = (props) 
                         variant="solid"
                         colorScheme="blue"
                         width="full"
+                        onClick={handleForgotPassword}
+                        isLoading={isLoading}
                     >
                         Send Code
                     </Button>
                     <Flex color={'gray'} fontSize='14px'>
                         <Text mr={2}>Already have an account?</Text>
-                        <Text as={'u'} _hover={{ cursor: 'pointer' }} color='blue.500' onClick={() => props.handlePageSwitch()}>Login</Text>
+                        <Text as={'u'} _hover={{ cursor: 'pointer' }} color='blue.500' onClick={() => props.handlePageSwitch('login')}>Login</Text>
                     </Flex>
                 </Stack>
             </form>

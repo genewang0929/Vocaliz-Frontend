@@ -34,35 +34,44 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
     const toast = useToast();
     const router = useRouter();
 
-    const handleChangeTextLogin = () => setTextIsLogin(textIsLogin => textIsLogin = !textIsLogin);
-
     const handleLogin = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
-        setLoginLoading(loginLoading => loginLoading = true);
-        try {
-            const token = await login(loginEmail.current.value, loginPassword.current.value);
-            setCookie('token', token);
+        if (loginEmail.current.value !== undefined && loginEmail.current.value !== '' && 
+            loginPassword.current.value !== undefined && loginPassword.current.value !== '') {
+            setLoginLoading(loginLoading => loginLoading = true);
+            try {
+                const token = await login(loginEmail.current.value, loginPassword.current.value);
+                setCookie('token', token);
 
-            router.push('/category');
-        } catch (e) {
+                router.push('/category');
+            } catch (e) {
+                toast({
+                    title: "Wrong email or password.",
+                    status: 'error',
+                    position: 'top',
+                    duration: 2000,
+                    isClosable: true,
+                })
+            }
+
+            setLoginLoading(loginLoading => loginLoading = false);
+        } else {
             toast({
-                title: "Wrong email or password.",
+                title: 'Please finish the form.',
                 status: 'error',
                 position: 'top',
                 duration: 2000,
                 isClosable: true,
             })
         }
-
-        setLoginLoading(loginLoading => loginLoading = false);
     }
 
     const handleSignUp = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
-        if (inputEmail.current.value !== undefined &&
-            inputPassword.current.value !== '' &&
-            inputRetypePassword.current.value !== undefined &&
-            inputName.current.value !== '') {
+        if (inputEmail.current.value !== undefined && inputEmail.current.value !== '' &&
+            inputPassword.current.value !== undefined && inputPassword.current.value !== '' &&
+            inputRetypePassword.current.value !== undefined && inputRetypePassword.current.value !== '' &&
+            inputName.current.value !== undefined && inputName.current.value !== '') {
             // sign up
             setIsLoading(isLoading => isLoading = true);
             try {
@@ -122,11 +131,11 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
             <Avatar bg="blue.600" />
             <Tabs size='lg' align="center" isFitted >
                 <TabList>
-                    <Tab onClick={handleChangeTextLogin}>
-                        <Text fontSize={'3xl'} fontWeight='bold' color={textIsLogin ? 'blue.700' : 'gray.400'}>Log In</Text>
+                    <Tab>
+                        <Text fontSize={'3xl'} fontWeight='bold'>Log In</Text>
                     </Tab>
-                    <Tab onClick={handleChangeTextLogin}>
-                        <Text fontSize={'3xl'} fontWeight='bold' color={textIsLogin ? 'gray.400' : 'blue.700'}>Sign Up</Text>
+                    <Tab>
+                        <Text fontSize={'3xl'} fontWeight='bold'>Sign Up</Text>
                     </Tab>
                 </TabList>
                 <TabPanels>
@@ -148,7 +157,7 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
                                             pointerEvents="none"
                                             children={<CFaUserAlt color="gray.300" />}
                                         />
-                                        <Input type="email" placeholder="Email" />
+                                        <Input type="email" placeholder="Email" onChange={checkEmailValid} ref={loginEmail} />
                                     </InputGroup>
                                 </FormControl>
 
@@ -163,6 +172,7 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
                                         <Input
                                             type={showPassword ? "text" : "password"}
                                             placeholder="Password"
+                                            ref={loginPassword}
                                         />
 
                                     </InputGroup>
@@ -176,6 +186,8 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
                                     variant="solid"
                                     colorScheme="blue"
                                     width="full"
+                                    onClick={handleLogin}
+                                    isLoading={loginLoading}
                                 >
                                     Login
                                 </Button>

@@ -218,7 +218,7 @@ const VocabularyPage = () => {
                         </ModalBody>
 
                         <ModalFooter>
-                            <Button colorScheme='blue' mr={3} isDisabled={addButtonLoad} onClick={() => addWord(inputWord.current.value, inputDef.current.value)}>Save</Button>
+                            <Button colorScheme='blue' mr={3} isDisabled={addButtonLoad} onClick={() => addWord(inputWord.current.value, inputDef.current.value)}>Add</Button>
                             <Button onClick={onClose} variant='ghost'>Cancel</Button>
                         </ModalFooter>
                     </ModalContent>

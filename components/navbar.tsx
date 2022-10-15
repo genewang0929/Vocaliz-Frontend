@@ -28,6 +28,7 @@ import { getAllCategories } from '../api/api_utils'
 import { CategoryInterface } from '../interface'
 import { useEffect } from 'react'
 import Router, { useRouter } from 'next/router'
+import { Text } from '@chakra-ui/react'
 
 export const Navbar: React.FC = () => {
   const inputWord = React.useRef() as React.MutableRefObject<HTMLInputElement>; // input Word
@@ -48,7 +49,7 @@ export const Navbar: React.FC = () => {
         <Flex justify={'space-between'} p="3" pr={10} pl={10}>
           <Flex flex={'flex-start'}>
             <HStack spacing={6}>
-              <Image src='../images/vocaliz-lightMode.png' alt='logo'></Image>
+            <Text fontSize={'3xl'} fontWeight='extrabold' fontFamily='heading' _hover={{ cursor: 'pointer' }} userSelect='none'>Vocaliz</Text>
               <NextLink href='/category' passHref>
                 Home
               </NextLink>

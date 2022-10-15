@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FaLock, FaUserAlt } from "react-icons/fa";
 import { Navbar } from "../components/navbar";
 import { NavbarLogin } from "../components/navbar_login";
-import { Text } from "@chakra-ui/react";
+import { Text, Image } from "@chakra-ui/react";
 import { LoginForm } from "../components/loginForm";
 import { ForgetPassword } from "../components/forgetPassword";
 import { VerifyCode } from "../components/verifyCode";
@@ -24,10 +24,17 @@ const LoginPage = () => {
 
                     {/* Title */}
                     <Flex flexDir={'column'} m={2} width='50%'>
-                        <Text fontSize={'6xl'} color='blue.700' fontWeight='black' lineHeight={1}>Memorize every vocabulary</Text>
-                        <Text fontSize={'xl'} color='blue.800' fontWeight='bold' mt={5}>
+                        <Text fontSize={'6xl'} color='blue.700' fontWeight='black' lineHeight={1} userSelect='none'>Memorize every vocabulary</Text>
+                        <Text fontSize={'xl'} color='blue.800' fontWeight='bold' mt={5} userSelect='none'>
                             Optimize your vocabulary-learning experience to the finest
                         </Text>
+                        <Image 
+                            src="https://i.imgur.com/UbtCN8r.jpg" 
+                            alt="cover"
+                            boxSize='400px'
+                            borderRadius={'full'}
+                            
+                        ></Image>
                     </Flex>
 
                     {/* Login Form | Forget Password */}

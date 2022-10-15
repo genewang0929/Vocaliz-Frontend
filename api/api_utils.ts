@@ -3,7 +3,7 @@ import axios from "axios"
 /* -----------------Vocabulary APIs----------------- */
 
 export const getAllVocab = async (offset: number) => {
-    let categoryId = '62da1c83b7234e30a3070cc3';
+    let categoryId = '63246de0c3a5bd6e9851e02b';
 
     const response = await axios.get(
         `http://localhost:8080/allWords/${categoryId}/${offset}/10`
@@ -20,7 +20,7 @@ export const getAllVocab = async (offset: number) => {
 }
 
 export const getVocabByRankLV = async (offset: number, rankLV: number) => {
-    let categoryId = '62da1c83b7234e30a3070cc3';
+    let categoryId = '63246de0c3a5bd6e9851e02b';
 
     const response = await axios.get(
         `http://localhost:8080/rankLVWords/${categoryId}/${rankLV}/${offset}/10`
@@ -44,7 +44,7 @@ export const deleteVocab = async (wordId: string) => {
 
 export const createVocab = async (word: string, definition: string) => {
     let email = 'genewang7@gmail.com';
-    let categoryId = '62da1c83b7234e30a3070cc3';
+    let categoryId = '63246de0c3a5bd6e9851e02b';
 
     await axios.post(
         `http://localhost:8080/word/${email}/${categoryId}`,
@@ -117,7 +117,7 @@ export const deleteACategory = async (categoryId: string) => {
 /* -----------------Quiz APIs----------------- */
 
 export const getQuizList = async (rankLV: number, wordNum: number) => {
-    let categoryId = '62da1c83b7234e30a3070cc3';
+    let categoryId = '63246de0c3a5bd6e9851e02b';
 
     const response = await axios.get(
         `http://localhost:8080/quizWords/${categoryId}?rankLV=${rankLV}&wordNum=${wordNum}`
@@ -182,7 +182,8 @@ export const login = async (email: string, password: string) => {
             password: password
         }
     )
-    return response.data;
+    console.log(response.data);
+    return response.data.token;
 }
 
 export const forgotPassword = async (email: string) => {

@@ -24,6 +24,7 @@ import Link from 'next/link'
 import * as React from 'react'
 import { FiMenu } from 'react-icons/fi'
 import { theme } from '@chakra-ui/react'
+import { Text } from '@chakra-ui/react'
 
 
 export const NavbarLogin: React.FC = () => {
@@ -32,10 +33,10 @@ export const NavbarLogin: React.FC = () => {
   return (
     <Box as="section" >
       <Box as="nav" boxShadow='md'>
-        <Flex justify={'space-between'} p="3">
+        <Flex justify={'space-between'} p="3" pr={10} pl={10}>
           <Flex flex={'flex-start'}>
             <HStack spacing={6}>
-              <Image src='../images/vocaliz-lightMode.png' alt='logo'></Image>
+              <Text fontSize={'3xl'} fontWeight='extrabold' fontFamily='heading' _hover={{ cursor: 'pointer' }} userSelect='none'>Vocaliz</Text>
               <NextLink href='/category' passHref>
                 Home
               </NextLink>

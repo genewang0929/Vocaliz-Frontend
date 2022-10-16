@@ -50,7 +50,7 @@ export const CategoryCard: React.FC<{ categoryId: string, categoryName: string, 
             _hover={{ bg: 'blue.400', cursor: 'pointer' }}
         >
             <Flex p={10} onClick={handleClick}>
-                <Text fontSize='xl' fontWeight='bold'>{props.categoryName}</Text>
+                <Text fontSize='xl' fontWeight='bold' userSelect={'none'}>{props.categoryName}</Text>
             </Flex>
             <Flex width={'80%'} justifyContent='flex-end'>
                 <Menu>

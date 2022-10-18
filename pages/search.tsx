@@ -37,7 +37,7 @@ const SearchPage = () => {
         setIsLoading(isLoading => isLoading = false);
         try {
             const { searchedVocabList, vocabPages } = await getSearchList(0, vocab, getCookie("email"));
-    
+
             setIsLoading(isLoading => isLoading = true);
             setSearchedList(searchedList => searchedList = searchedVocabList);
             setTotalPages(totalPages => totalPages = vocabPages);
@@ -55,9 +55,9 @@ const SearchPage = () => {
     }
 
     useEffect(() => {
-        if (getCookies() === null || getCookie('email') == undefined || getCookie('email') == null) 
+        if (getCookies() === null || getCookie('email') == undefined || getCookie('email') == null)
             router.push('/login');
-            
+
         fetchSearch(router.query.word as string);
     }, [])
 
@@ -71,7 +71,7 @@ const SearchPage = () => {
                     {isLoading ?
                         searchedList.map((searchedWord: SearchInterface) =>
                             <SearchCard
-                                key={searchedWord.parentCategoryName}
+                                key={searchedWord.parentCategoryId}
                                 word={searchedWord.word}
                                 definition={searchedWord.definition}
                                 parentCategoryId={searchedWord.parentCategoryId}
@@ -96,7 +96,11 @@ const SearchPage = () => {
                     </Button>
                     {
                         totalPages.map(num =>
-                            <Button colorScheme={(pageNum === num) ? 'blue' : 'transparent'} color={(pageNum === num) ? 'white' : 'black'} onClick={() => goToPage(num)}>
+                            <Button
+                                key={num}
+                                colorScheme={(pageNum === num) ? 'blue' : 'transparent'}
+                                color={(pageNum === num) ? 'white' : 'black'}
+                                onClick={() => goToPage(num)}>
                                 <Text>{num}</Text>
                             </Button>
                         )

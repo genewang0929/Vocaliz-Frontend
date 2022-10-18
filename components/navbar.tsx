@@ -84,7 +84,7 @@ export const Navbar: React.FC = () => {
       router.push('/login');
     }
   }
-  
+
   const switchToVocabPage = async (e: React.MouseEvent<HTMLElement>, page: string) => {
     e.preventDefault();
 
@@ -128,7 +128,11 @@ export const Navbar: React.FC = () => {
                     {
                       (categoryList.length !== 0) &&
                       categoryList.map((category: CategoryInterface) =>
-                        <MenuItem _hover={{ bg: 'blue.500', color: 'white' }} onClick={(e) => switchToVocabPage(e, category.categoryName)}>{category.categoryName}</MenuItem>
+                        <MenuItem
+                          key={category.categoryId}
+                          _hover={{ bg: 'blue.500', color: 'white' }}
+                          onClick={(e) => switchToVocabPage(e, category.categoryName)}>{category.categoryName}
+                        </MenuItem>
                       )
                     }
                     {/* <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-1</MenuItem>

@@ -292,7 +292,6 @@ export const login = async (email: string, password: string) => {
             password: password
         }
     )
-    console.log(response.data);
     return response.data.token;
 }
 

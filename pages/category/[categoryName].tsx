@@ -40,7 +40,6 @@ const VocabularyPage = () => {
 
     const fetchAllVocab = async () => {
         const categoryId = getCookie("categoryId");
-        console.log(categoryId);
         setIsLoading(isLoading => isLoading = false);
         try {
             const { allVocabList, vocabPages } = await getAllVocab(pageNum - 1, categoryId);
@@ -262,7 +261,11 @@ const VocabularyPage = () => {
                     </Button>
                     {
                         totalPages.map(num =>
-                            <Button colorScheme={(pageNum === num) ? 'blue' : 'transparent'} color={(pageNum === num) ? 'white' : 'black'} onClick={() => goToPage(num)}>
+                            <Button
+                                key={num}
+                                colorScheme={(pageNum === num) ? 'blue' : 'transparent'}
+                                color={(pageNum === num) ? 'white' : 'black'}
+                                onClick={() => goToPage(num)}>
                                 <Text>{num}</Text>
                             </Button>
                         )

@@ -59,11 +59,10 @@ export const ForgetPassword: React.FC<{ handlePageSwitch: Function }> = (props) 
                 >
                     <FormControl>
                         <InputGroup>
-                            <InputLeftElement
-                                pointerEvents="none"
-                                children={<CFaUserAlt color="gray.300" />}
-                            />
-                            <Input type="email" placeholder="Email" focusBorderColor="black" ref={inputEmail}/>
+                            <InputLeftElement pointerEvents="none">
+                                <CFaUserAlt color="gray.300" />
+                            </InputLeftElement>
+                            <Input type="email" placeholder="Email" focusBorderColor="black" ref={inputEmail} />
                         </InputGroup>
                     </FormControl>
                     <Button

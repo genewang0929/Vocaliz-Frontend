@@ -155,10 +155,9 @@ export const Navbar: React.FC = () => {
             <HStack spacing={6}>
               <form onSubmit={handleSearch}>
                 <InputGroup>
-                  <InputLeftElement
-                    pointerEvents='none'
-                    children={<SearchIcon color={'blackAlpha'} />}
-                  />
+                  <InputLeftElement pointerEvents="none">
+                    <SearchIcon color={'blackAlpha'} />
+                  </InputLeftElement>
                   <Input type='tel' bg={'blue.50'} placeholder='Search Vocabulary' _placeholder={{ color: 'blackAlpha' }} focusBorderColor={'white'} ref={inputWord} />
                 </InputGroup>
               </form>

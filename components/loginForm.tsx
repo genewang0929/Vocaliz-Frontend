@@ -36,7 +36,7 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
 
     const handleLogin = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
-        if (loginEmail.current.value !== undefined && loginEmail.current.value !== '' && 
+        if (loginEmail.current.value !== undefined && loginEmail.current.value !== '' &&
             loginPassword.current.value !== undefined && loginPassword.current.value !== '') {
             setLoginLoading(loginLoading => loginLoading = true);
             try {
@@ -122,7 +122,7 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
         }
     }
 
-    
+
 
     return (
         <Stack
@@ -156,10 +156,9 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
                                 {/* Email */}
                                 <FormControl>
                                     <InputGroup>
-                                        <InputLeftElement
-                                            pointerEvents="none"
-                                            children={<CFaUserAlt color="gray.300" />}
-                                        />
+                                        <InputLeftElement pointerEvents="none">
+                                            <CFaUserAlt color="gray.300" />
+                                        </InputLeftElement>
                                         <Input type="email" placeholder="Email" onChange={checkEmailValid} ref={loginEmail} />
                                     </InputGroup>
                                 </FormControl>
@@ -167,11 +166,9 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
                                 {/* Password */}
                                 <FormControl>
                                     <InputGroup>
-                                        <InputLeftElement
-                                            pointerEvents="none"
-                                            color="gray.300"
-                                            children={<CFaLock color="gray.300" />}
-                                        />
+                                        <InputLeftElement pointerEvents="none" color="gray.300">
+                                            <CFaUserAlt color="gray.300" />
+                                        </InputLeftElement>
                                         <Input
                                             type={showPassword ? "text" : "password"}
                                             placeholder="Password"
@@ -211,10 +208,9 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
                                 {/* Email */}
                                 <FormControl>
                                     <InputGroup>
-                                        <InputLeftElement
-                                            pointerEvents="none"
-                                            children={<CFaUserAlt color="gray.300" />}
-                                        />
+                                        <InputLeftElement pointerEvents="none">
+                                            <CFaUserAlt color="gray.300" />
+                                        </InputLeftElement>
                                         <Input type="email" placeholder="Email" onChange={checkEmailValid} ref={inputEmail} />
                                     </InputGroup>
                                     {showEmailError &&
@@ -227,11 +223,9 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
                                 {/* Password */}
                                 <FormControl>
                                     <InputGroup>
-                                        <InputLeftElement
-                                            pointerEvents="none"
-                                            color="gray.300"
-                                            children={<CFaLock color="gray.300" />}
-                                        />
+                                        <InputLeftElement pointerEvents="none" color="gray.300">
+                                            <CFaUserAlt color="gray.300" />
+                                        </InputLeftElement>
                                         <Input
                                             type={showPassword ? "text" : "password"}
                                             placeholder="Password"
@@ -249,11 +243,9 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
                                 {/* Retype Password */}
                                 <FormControl>
                                     <InputGroup>
-                                        <InputLeftElement
-                                            pointerEvents="none"
-                                            color="gray.300"
-                                            children={<CFaLock color="gray.300" />}
-                                        />
+                                        <InputLeftElement pointerEvents="none" color="gray.300">
+                                            <CFaUserAlt color="gray.300" />
+                                        </InputLeftElement>
                                         <Input
                                             type={showRetypePassword ? "text" : "password"}
                                             placeholder="Retype Password"
@@ -279,10 +271,9 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
                                 {/* Name */}
                                 <FormControl>
                                     <InputGroup>
-                                        <InputLeftElement
-                                            pointerEvents="none"
-                                            children={<CFaUserAlt color="gray.300" />}
-                                        />
+                                        <InputLeftElement pointerEvents="none">
+                                            <CFaUserAlt color="gray.300" />
+                                        </InputLeftElement>
                                         <Input type="text" placeholder="Name" ref={inputName} />
                                     </InputGroup>
                                 </FormControl>

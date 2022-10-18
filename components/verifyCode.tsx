@@ -34,7 +34,7 @@ export const VerifyCode: React.FC<{ handlePageSwitch: Function }> = (props) => {
         else {
             setIsDisabled(isDisabled => isDisabled = true);
             try {
-                await verifyCode(email, inputCode.current.value);    
+                await verifyCode(email, inputCode.current.value);
                 toast({
                     title: 'Verify Complete!',
                     status: 'success',
@@ -90,10 +90,10 @@ export const VerifyCode: React.FC<{ handlePageSwitch: Function }> = (props) => {
                 >
                     <FormControl>
                         <InputGroup>
-                            <InputLeftElement
-                                pointerEvents="none"
-                                children={<CFaLock color="gray.300" />}
-                            />
+                            <InputLeftElement pointerEvents="none">
+                                <CFaUserAlt color="gray.300" />
+                            </InputLeftElement>
+
                             <Input type="number" placeholder="Code" focusBorderColor="black" ref={inputCode} />
                             <InputRightElement>
                                 <IconButton h="1.75rem" size="sm" onClick={resendCode} isLoading={isLoading} aria-label={""} icon={<RepeatIcon />} />

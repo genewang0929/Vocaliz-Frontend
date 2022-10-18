@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Center, chakra, Container, Flex, FormControl, FormHelperText, Heading, Input, InputGroup, InputLeftElement, InputRightElement, Link, Stack, Tab, TabList, TabPanel, TabPanels, Tabs, useColorMode, useColorModeValue } from "@chakra-ui/react";
 import NextLink from "next/link"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaLock, FaUserAlt } from "react-icons/fa";
 import { Navbar } from "../components/navbar";
 import { NavbarLogin } from "../components/navbar_login";
@@ -8,6 +8,7 @@ import { Text, Image } from "@chakra-ui/react";
 import { LoginForm } from "../components/loginForm";
 import { ForgetPassword } from "../components/forgetPassword";
 import { VerifyCode } from "../components/verifyCode";
+import { removeCookie } from "typescript-cookie";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
@@ -15,6 +16,13 @@ const CFaLock = chakra(FaLock);
 const LoginPage = () => {
     const [switchPage, setSwitchPage] = useState('login');
     const handlePageSwitch = (page: string) => setSwitchPage(switchPage => switchPage = page);
+
+    useEffect(() => {
+        removeCookie('token');
+        removeCookie('email');
+        removeCookie('categoryId');
+        removeCookie('categoryName');
+    }, [])
 
     return (
         <div>

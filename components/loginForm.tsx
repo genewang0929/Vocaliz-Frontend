@@ -42,6 +42,7 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
             try {
                 const token = await login(loginEmail.current.value, loginPassword.current.value);
                 setCookie('token', token);
+                setCookie('email', loginEmail.current.value);
 
                 router.push('/category');
             } catch (e) {
@@ -120,6 +121,8 @@ export const LoginForm: React.FC<{ handlePageSwitch: Function }> = (props) => {
                 setShowRetypePasswordError(showRetypePasswordError => showRetypePasswordError = false);
         }
     }
+
+    
 
     return (
         <Stack

@@ -1,150 +1,260 @@
+import { useToast } from "@chakra-ui/react";
 import axios from "axios"
+import { getCookie, setCookie } from "typescript-cookie";
+import { CategoryInterface } from "../interface";
 
 /* -----------------Vocabulary APIs----------------- */
 
-export const getAllVocab = async (offset: number) => {
-    let categoryId = '63246de0c3a5bd6e9851e02b';
+export const getAllVocab = async (offset: number, categoryId: string) => {
+    try {
+        const response = await axios.get(
+            `https://vocaliz-azure.azurewebsites.net/allWords/${categoryId}/${offset}/10`, {
+            headers: {
+                'Authorization': 'Bearer ' + getCookie("token"),
+            }
+        }
+        );
+        const allVocab = response.data.vocabulary;
+        const allVocabList = allVocab.items;
+        const vocabPages: number[] = [];
+        for (let i = 1; i <= allVocab.totalPages; i++)
+            vocabPages.push(i);
+        if (vocabPages.length === 0)
+            vocabPages.push(1);
 
-    const response = await axios.get(
-        `http://localhost:8080/allWords/${categoryId}/${offset}/10`
-    );
-    const allVocab = response.data.vocabulary;
-    const allVocabList = allVocab.items;
-    const vocabPages: number[] = [];
-    for (let i = 1; i <= allVocab.totalPages; i++)
-        vocabPages.push(i);
-    if (vocabPages.length === 0)
-        vocabPages.push(1);
-
-    return { allVocabList, vocabPages };
+        return { allVocabList, vocabPages };
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
 }
 
-export const getVocabByRankLV = async (offset: number, rankLV: number) => {
-    let categoryId = '63246de0c3a5bd6e9851e02b';
-
-    const response = await axios.get(
-        `http://localhost:8080/rankLVWords/${categoryId}/${rankLV}/${offset}/10`
-    )
-    const vocabByRankLV = response.data.vocabulary;
-    const vocabByRankLVList = vocabByRankLV.items;
-    const vocabPages: number[] = [];
-    for (let i = 1; i <= vocabByRankLV.totalPages; i++)
-        vocabPages.push(i);
-    if (vocabPages.length === 0)
-        vocabPages.push(1);
-
-    return { vocabByRankLVList, vocabPages };
+export const getVocabByRankLV = async (offset: number, rankLV: number, categoryId: string) => {
+    try {
+        const response = await axios.get(
+            `https://vocaliz-azure.azurewebsites.net/rankLVWords/${categoryId}/${rankLV}/${offset}/10`, {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie("token"),
+                }
+            }
+        )
+        const vocabByRankLV = response.data.vocabulary;
+        const vocabByRankLVList = vocabByRankLV.items;
+        const vocabPages: number[] = [];
+        for (let i = 1; i <= vocabByRankLV.totalPages; i++)
+            vocabPages.push(i);
+        if (vocabPages.length === 0)
+            vocabPages.push(1);
+    
+        return { vocabByRankLVList, vocabPages };
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
 }
 
 export const deleteVocab = async (wordId: string) => {
-    await axios.delete(
-        `http://localhost:8080/word/${wordId}`
-    )
+    try {
+        await axios.delete(
+            `https://vocaliz-azure.azurewebsites.net/word/${wordId}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie("token"),
+                }
+            }
+        )
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
 }
 
-export const createVocab = async (word: string, definition: string) => {
-    let email = 'genewang7@gmail.com';
-    let categoryId = '63246de0c3a5bd6e9851e02b';
-
-    await axios.post(
-        `http://localhost:8080/word/${email}/${categoryId}`,
-        {
-            word: word,
-            definition: definition
-        }
-    )
+export const createVocab = async (word: string, definition: string, email: string, categoryId: string) => {
+    try {
+        await axios.post(
+            `https://vocaliz-azure.azurewebsites.net/word/${email}/${categoryId}`,
+            {
+                word: word,
+                definition: definition
+            }, 
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie("token"),
+                }
+            }
+        )
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
 }
 
 export const editVocab = async (wordId: string, word: string, definition: string) => {
-    await axios.put(
-        `http://localhost:8080/word/${wordId}`,
-        {
-            word: word,
-            definition: definition
-        }
-    )
+    try {
+        await axios.put(
+            `https://vocaliz-azure.azurewebsites.net/word/${wordId}`,
+            {
+                word: word,
+                definition: definition
+            }, 
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie("token"),
+                }
+            }
+        )
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
 }
 
 export const editVocabRankLV = async (wordId: string, rankLV: number) => {
-    await axios.put(
-        `http://localhost:8080/editRankLV/${wordId}`,
-        {
-            rankLV: rankLV
-        }
-    )
+    try {
+        await axios.put(
+            `https://vocaliz-azure.azurewebsites.net/editRankLV/${wordId}`,
+            {
+                rankLV: rankLV
+            }, 
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie("token"),
+                }
+            }
+        )
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
 }
 
 
 /* -----------------Category APIs----------------- */
 
-export const getAllCategories = async () => {
-    let email = 'genewang7@gmail.com';
+export const getAllCategories = async (email: string) => {
+    try {
+        const response = await axios.get(
+            `https://vocaliz-azure.azurewebsites.net/category/allCategories/${email}`, {
+            headers: {
+                'Authorization': 'Bearer ' + getCookie("token"),
+            }
+        }
+        );
 
-    const response = await axios.get(
-        `http://localhost:8080/category/allCategories/${email}`
-    );
-
-    return response.data.categories;
+        return response.data.categories;
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
 }
 
-export const createCategory = async (categoryName: string) => {
-    let email = 'genewang7@gmail.com';
-
-    await axios.post(
-        `http://localhost:8080/category/${email}`,
-        {
-            categoryName: categoryName
-        }
-    )
+export const createCategory = async (categoryName: string, email: string) => {
+    try {
+        await axios.post(
+            `https://vocaliz-azure.azurewebsites.net/category/${email}`,
+            {
+                categoryName: categoryName
+            }, 
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie("token"),
+                }
+            }
+        )
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
 }
 
 export const renameCategory = async (categoryName: string, categoryId: string) => {
-    await axios.put(
-        `http://localhost:8080/category/rename/${categoryId}`,
-        {
-            newCategoryName: categoryName
-        }
-    )
+    try {
+        await axios.put(
+            `https://vocaliz-azure.azurewebsites.net/category/rename/${categoryId}`,
+            {
+                newCategoryName: categoryName
+            }, 
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie("token"),
+                }
+            }
+        )
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
 }
 
 export const deleteACategory = async (categoryId: string) => {
-    await axios.delete(
-        `http://localhost:8080/category/${categoryId}`
-    )
+    try {
+        await axios.delete(
+            `https://vocaliz-azure.azurewebsites.net/category/${categoryId}`,
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie("token"),
+                }
+            }
+        )
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
+}
+
+export const getCategoryByName = async (email: string, categoryName: string) => {
+    try {
+        const response = await axios.get(
+            `https://vocaliz-azure.azurewebsites.net/category/getCategoryByName/${email}/${categoryName}`,
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie("token"),
+                }
+            }
+        )
+        const category:CategoryInterface = response.data.category;
+        const getCategoryId = category.categoryId
+        const getCategoryName = category.categoryName;
+        return {getCategoryId, getCategoryName};
+
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
 }
 
 
 /* -----------------Quiz APIs----------------- */
 
-export const getQuizList = async (rankLV: number, wordNum: number) => {
-    let categoryId = '63246de0c3a5bd6e9851e02b';
-
-    const response = await axios.get(
-        `http://localhost:8080/quizWords/${categoryId}?rankLV=${rankLV}&wordNum=${wordNum}`
-    )
-
-    return response.data.vocabulary;
+export const getQuizList = async (rankLV: number, wordNum: number, categoryId: string) => {
+    try {
+        const response = await axios.get(
+            `https://vocaliz-azure.azurewebsites.net/quizWords/${categoryId}?rankLV=${rankLV}&wordNum=${wordNum}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie("token"),
+                }
+            }
+        )
+    
+        return response.data.vocabulary;
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
 }
 
 
 /* -----------------Search APIs----------------- */
 
-export const getSearchList = async (offset: number, vocab: string) => {
-    let email = 'genewang7@gmail.com';
-
-    const response = await axios.get(
-        `http://localhost:8080/search/${email}/${offset}/10?word=${vocab}`
-    )
-
-    const searchedVocab = response.data.vocabulary;
-    const searchedVocabList = searchedVocab.items;
-    const vocabPages: number[] = [];
-    for (let i = 1; i <= searchedVocab.totalPages; i++)
-        vocabPages.push(i);
-    if (vocabPages.length === 0)
-        vocabPages.push(1);
-
-    return { searchedVocabList, vocabPages };
+export const getSearchList = async (offset: number, vocab: string, email: string) => {
+    try {
+        const response = await axios.get(
+            `https://vocaliz-azure.azurewebsites.net/search/${email}/${offset}/10?word=${vocab}`, {
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie("token"),
+                }
+            }
+        )
+    
+        const searchedVocab = response.data.vocabulary;
+        const searchedVocabList = searchedVocab.items;
+        const vocabPages: number[] = [];
+        for (let i = 1; i <= searchedVocab.totalPages; i++)
+            vocabPages.push(i);
+        if (vocabPages.length === 0)
+            vocabPages.push(1);
+    
+        return { searchedVocabList, vocabPages };
+    } catch (e) {
+        throw 'Forbidden Request';
+    }
 }
 
 
@@ -152,7 +262,7 @@ export const getSearchList = async (offset: number, vocab: string) => {
 
 export const signUp = async (email: string, password: string, name: string) => {
     await axios.post(
-        `http://localhost:8080/verification/signup`,
+        `https://vocaliz-azure.azurewebsites.net/verification/signup`,
         {
             email: email,
             password: password,
@@ -163,20 +273,20 @@ export const signUp = async (email: string, password: string, name: string) => {
 
 export const verifyCode = async (email: string, code: string) => {
     await axios.put(
-        `http://localhost:8080/verification/verify/${email}/${code}`
+        `https://vocaliz-azure.azurewebsites.net/verification/verify/${email}/${code}`
     )
 }
 
 export const resendCodeMail = async (email: string) => {
     await axios.post(
-        `http://localhost:8080/verification/resendCode/${email}`
+        `https://vocaliz-azure.azurewebsites.net/verification/resendCode/${email}`
     )
 }
 
 
 export const login = async (email: string, password: string) => {
     const response = await axios.post(
-        `http://localhost:8080/verification/login`, 
+        `https://vocaliz-azure.azurewebsites.net/verification/login`,
         {
             email: email,
             password: password
@@ -188,13 +298,13 @@ export const login = async (email: string, password: string) => {
 
 export const forgotPassword = async (email: string) => {
     const response = await axios.post(
-        `http://localhost:8080/verification/randomPassword/${email}`
+        `https://vocaliz-azure.azurewebsites.net/verification/randomPassword/${email}`
     )
 }
 
 export const resetPassword = async (password: string, newPassword: string, email: string) => {
     await axios.post(
-        `http://localhost:8080/verification/resetPassword`,
+        `https://vocaliz-azure.azurewebsites.net/verification/resetPassword`,
         {
             password: password,
             newPassword: newPassword,

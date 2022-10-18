@@ -13,3 +13,10 @@ export interface CategoryInterface {
     vocabularies: string[];
     creatorEmail: string;
 }
+
+export interface SearchInterface {
+    word: string;
+    definition: string;
+    parentCategoryId: string;
+    parentCategoryName: string;
+}

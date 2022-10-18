@@ -1,4 +1,4 @@
-import { Box, Button, Center, Flex, FormControl, FormHelperText, FormLabel, Grid, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Stack, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, FormControl, FormHelperText, FormLabel, Grid, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Spinner, Stack, Tooltip, useDisclosure, useToast } from "@chakra-ui/react";
 import { Navbar } from "../../components/navbar"
 import { Text } from "@chakra-ui/react";
 import { CategoryCard } from "../../components/categoryCard";
@@ -6,6 +6,8 @@ import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { createCategory, deleteACategory, getAllCategories, renameCategory } from "../../api/api_utils";
 import { CategoryInterface } from "../../interface";
 import { AddIcon } from "@chakra-ui/icons";
+import { getCookie, getCookies } from "typescript-cookie";
+import { useRouter } from "next/router";
 
 const CategoryPage = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -16,13 +18,26 @@ const CategoryPage = () => {
     const [isError, setIsError] = useState(false);
     let error = false;
     const inputCategory = useRef() as MutableRefObject<HTMLInputElement>; // input Word
+    const toast = useToast();
+    const router = useRouter();
 
     const fetchAllCategories = async () => {
-        setIsLoading(isLoading => isLoading = false);
-        const allCategories = await getAllCategories();
+        const userEmail = getCookie('email');
 
-        setIsLoading(isLoading => isLoading = true);
-        setCategoryList(categoryList => categoryList = allCategories);
+        setIsLoading(isLoading => isLoading = false);
+        try {
+            const allCategories = await getAllCategories(userEmail);
+            setIsLoading(isLoading => isLoading = true);
+            setCategoryList(categoryList => categoryList = allCategories);
+        } catch(e) {
+            toast({
+                title: "Please login first.",
+                status: 'error',
+                position: 'top',
+                duration: 2000,
+                isClosable: true,
+            })
+        }
     }
 
     const checkDuplicate = (categoryName: string) => {
@@ -45,30 +60,69 @@ const CategoryPage = () => {
             // check duplicate category name
             if (!checkDuplicate(categoryName)) {
                 setAddButtonLoad(addButtonLoad => addButtonLoad = true);
-                await createCategory(categoryName);
-                fetchAllCategories();
-                //clean up
-                inputCategory.current.value = '';
-                onClose();
-                setAddButtonLoad(addButtonLoad => addButtonLoad = false);
+                try {
+                    await createCategory(categoryName, getCookie("email"));
+                    fetchAllCategories();
+                    //clean up
+                    inputCategory.current.value = '';
+                    onClose();
+                    setAddButtonLoad(addButtonLoad => addButtonLoad = false);
+                } catch (e) {
+                    toast({
+                        title: "Please login first.",
+                        status: 'error',
+                        position: 'top',
+                        duration: 2000,
+                        isClosable: true,
+                    })
+        
+                    router.push('/login');
+                }
             }
         }
     }
 
     const editCategory = async (categoryName: string, categoryId: string) => {
         if (categoryName !== '') {
-            await renameCategory(categoryName, categoryId);
-            fetchAllCategories();
+            try {
+                await renameCategory(categoryName, categoryId);
+                fetchAllCategories();
+            } catch (e) {
+                toast({
+                    title: "Please login first.",
+                    status: 'error',
+                    position: 'top',
+                    duration: 2000,
+                    isClosable: true,
+                })
+    
+                router.push('/login');
+            }
         }
     }
 
     const deleteCategory = async (categoryId: string) => {
-        await deleteACategory(categoryId);
-        fetchAllCategories();
+        try {
+            await deleteACategory(categoryId);
+            fetchAllCategories();
+        } catch (e) {
+            toast({
+                title: "Please login first.",
+                status: 'error',
+                position: 'top',
+                duration: 2000,
+                isClosable: true,
+            })
+
+            router.push('/login');
+        }
     }
 
     useEffect(() => {
-        fetchAllCategories();
+        if (getCookies() === null || getCookie('email') == undefined || getCookie('email') == null) 
+            router.push('/login');
+        else
+            fetchAllCategories();
     }, [])
 
     return (

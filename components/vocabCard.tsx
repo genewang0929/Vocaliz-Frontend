@@ -1,9 +1,18 @@
 import { DeleteIcon, EditIcon, Icon, StarIcon } from "@chakra-ui/icons"
-import { Button, Center, Divider, Flex, FormControl, FormLabel, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, Stack, Tooltip, useDisclosure } from "@chakra-ui/react"
+import { Button, Center, ColorProps, Divider, Flex, FormControl, FormLabel, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, ResponsiveValue, Stack, Tooltip, useDisclosure } from "@chakra-ui/react"
 import { Text } from "@chakra-ui/react"
 import React, { MutableRefObject, useRef, useState } from "react";
 
 export const VocabCard: React.FC<{ isView: boolean, id: string, word: string, definition: string, rankLV: number, deleteWord: Function, editWord: Function, editRankLV: Function }> = (props) => {
+    
+    // define color type for rankLV
+    type Color = "#000000" | "#F6E05E" | "#319795" | "#E53E3E";
+    const BLACK: Color = '#000000';
+    const YELLOW_300: Color = '#F6E05E';
+    const TEAL_500: Color = '#319795';
+    const RED_500: Color = '#E53E3E';
+
+
     const { isOpen: isOpenEdit, onOpen: onOpenEdit, onClose: onCloseEdit } = useDisclosure();
     const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
     const inputWord = useRef() as MutableRefObject<HTMLInputElement>; // input Word
@@ -36,13 +45,14 @@ export const VocabCard: React.FC<{ isView: boolean, id: string, word: string, de
     }
 
     const rankLVColor = () => {
-        let color = 'black';    // default rankLV = 0
+        
+        let color: Color = BLACK;    // default rankLV = 0
         if (props.rankLV === 1)
-            color = 'yellow.300';
+            color = YELLOW_300;
         if (props.rankLV === 2)
-            color = 'teal.500';
+            color = TEAL_500;
         if (props.rankLV === 3)
-            color = 'red.500';
+            color = RED_500;
 
         return color;
     }

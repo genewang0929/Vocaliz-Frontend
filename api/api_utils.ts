@@ -5,7 +5,7 @@ import { CategoryInterface } from "../interface";
 
 /* -----------------Vocabulary APIs----------------- */
 
-export const getAllVocab = async (offset: number, categoryId: string) => {
+export const getAllVocab = async (offset: number, categoryId: string | undefined) => {
     try {
         const response = await axios.get(
             `https://vocaliz-azure.azurewebsites.net/allWords/${categoryId}/${offset}/10`, {
@@ -28,7 +28,7 @@ export const getAllVocab = async (offset: number, categoryId: string) => {
     }
 }
 
-export const getVocabByRankLV = async (offset: number, rankLV: number, categoryId: string) => {
+export const getVocabByRankLV = async (offset: number, rankLV: number, categoryId: string | undefined) => {
     try {
         const response = await axios.get(
             `https://vocaliz-azure.azurewebsites.net/rankLVWords/${categoryId}/${rankLV}/${offset}/10`, {
@@ -65,7 +65,7 @@ export const deleteVocab = async (wordId: string) => {
     }
 }
 
-export const createVocab = async (word: string, definition: string, email: string, categoryId: string) => {
+export const createVocab = async (word: string, definition: string, email: string | undefined, categoryId: string | undefined) => {
     try {
         await axios.post(
             `https://vocaliz-azure.azurewebsites.net/word/${email}/${categoryId}`,
@@ -124,7 +124,7 @@ export const editVocabRankLV = async (wordId: string, rankLV: number) => {
 
 /* -----------------Category APIs----------------- */
 
-export const getAllCategories = async (email: string) => {
+export const getAllCategories = async (email: string | undefined) => {
     try {
         const response = await axios.get(
             `https://vocaliz-azure.azurewebsites.net/category/allCategories/${email}`, {
@@ -140,7 +140,7 @@ export const getAllCategories = async (email: string) => {
     }
 }
 
-export const createCategory = async (categoryName: string, email: string) => {
+export const createCategory = async (categoryName: string, email: string | undefined) => {
     try {
         await axios.post(
             `https://vocaliz-azure.azurewebsites.net/category/${email}`,
@@ -191,7 +191,7 @@ export const deleteACategory = async (categoryId: string) => {
     }
 }
 
-export const getCategoryByName = async (email: string, categoryName: string) => {
+export const getCategoryByName = async (email: string | undefined, categoryName: string) => {
     try {
         const response = await axios.get(
             `https://vocaliz-azure.azurewebsites.net/category/getCategoryByName/${email}/${categoryName}`,
@@ -214,7 +214,7 @@ export const getCategoryByName = async (email: string, categoryName: string) => 
 
 /* -----------------Quiz APIs----------------- */
 
-export const getQuizList = async (rankLV: number, wordNum: number, categoryId: string) => {
+export const getQuizList = async (rankLV: number, wordNum: number, categoryId: string | undefined) => {
     try {
         const response = await axios.get(
             `https://vocaliz-azure.azurewebsites.net/quizWords/${categoryId}?rankLV=${rankLV}&wordNum=${wordNum}`, {
@@ -233,7 +233,7 @@ export const getQuizList = async (rankLV: number, wordNum: number, categoryId: s
 
 /* -----------------Search APIs----------------- */
 
-export const getSearchList = async (offset: number, vocab: string, email: string) => {
+export const getSearchList = async (offset: number, vocab: string, email: string | undefined) => {
     try {
         const response = await axios.get(
             `https://vocaliz-azure.azurewebsites.net/search/${email}/${offset}/10?word=${vocab}`, {

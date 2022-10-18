@@ -1,8 +1,10 @@
 import { ChevronDownIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import { Button, Center, Flex, FormControl, FormHelperText, FormLabel, HStack, Input, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, useDisclosure, VStack } from "@chakra-ui/react"
+import { Button, Center, Flex, FormControl, FormHelperText, FormLabel, HStack, Input, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, useDisclosure, useToast, VStack } from "@chakra-ui/react"
 import { Text } from "@chakra-ui/react"
 import { useRouter } from "next/router"
 import React, { MutableRefObject, useRef, useState } from "react";
+import { getCookie, setCookie } from "typescript-cookie";
+import { getCategoryByName } from "../api/api_utils";
 import { CategoryInterface } from "../interface";
 
 export const CategoryCard: React.FC<{ categoryId: string, categoryName: string, editCategory: Function, deleteCategory: Function, checkDuplicate: Function }> = (props) => {
@@ -12,10 +14,29 @@ export const CategoryCard: React.FC<{ categoryId: string, categoryName: string, 
     const inputCategory = useRef() as MutableRefObject<HTMLInputElement>; // input Word
     const [showAlert, setShowAlert] = useState(false);  // show duplicate category name alert
     const [isError, setIsError] = useState(false);
+    const toast = useToast();
     
+    const getCategory = async () => {
+        try {
+            const {getCategoryId, getCategoryName} = await getCategoryByName(getCookie("email"), props.categoryName);
+            setCookie("categoryId", getCategoryId);
+            setCookie("categoryName", getCategoryName);
+        } catch (e) {
+            toast({
+                title: "Please login first.",
+                status: 'error',
+                position: 'top',
+                duration: 2000,
+                isClosable: true,
+            })
+        }
+    }
 
-    const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    const handleClick = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
+
+        await getCategory();
+
         router.push(`/category/${props.categoryName}`)
     }
 

@@ -1,5 +1,5 @@
 import { ChevronDownIcon, SearchIcon } from '@chakra-ui/icons'
-import { FormControl, MenuGroup, Spinner, Stack } from '@chakra-ui/react'
+import { FormControl, MenuGroup, Spinner, Stack, useToast } from '@chakra-ui/react'
 import { Menu, MenuButton, MenuList, MenuOptionGroup, MenuItemOption, MenuDivider } from '@chakra-ui/react'
 import { ChakraProvider } from '@chakra-ui/react'
 import { MenuItem } from '@chakra-ui/react'
@@ -24,20 +24,24 @@ import Link from 'next/link'
 import * as React from 'react'
 import { FiMenu } from 'react-icons/fi'
 import { theme } from '@chakra-ui/react'
-import { getAllCategories } from '../api/api_utils'
+import { getAllCategories, getCategoryByName } from '../api/api_utils'
 import { CategoryInterface } from '../interface'
 import { useEffect } from 'react'
 import Router, { useRouter } from 'next/router'
 import { Text } from '@chakra-ui/react'
+import { getCookie, removeCookie, setCookie } from 'typescript-cookie'
+import { FaWindows } from 'react-icons/fa'
 
 export const Navbar: React.FC = () => {
   const inputWord = React.useRef() as React.MutableRefObject<HTMLInputElement>; // input Word
   const [categoryList, setCategoryList] = React.useState<CategoryInterface[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
+  const toast = useToast();
+  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
-    Router.push(
+    router.push(
       {
         pathname: '/search',
         query: { word: inputWord.current.value }
@@ -46,21 +50,52 @@ export const Navbar: React.FC = () => {
   }
 
   const handleClickCategory = async () => {
+    const userEmail = getCookie('email');
+
     setIsLoading(isLoading => isLoading = false);
-    const allCategories = await getAllCategories();
-
-    setIsLoading(isLoading => isLoading = true);
-    setCategoryList(categoryList => categoryList = allCategories);
-
+    try {
+      const allCategories = await getAllCategories(userEmail);
+      setIsLoading(isLoading => isLoading = true);
+      setCategoryList(categoryList => categoryList = allCategories);
+    } catch (e) {
+      toast({
+        title: "Please login first.",
+        status: 'error',
+        position: 'top',
+        duration: 2000,
+        isClosable: true,
+      })
+    }
   }
 
-  const switchToVocabPage = (e: React.MouseEvent<HTMLElement>, page: string) => {
+  const getCategory = async (categoryName: string) => {
+    try {
+      const { getCategoryId, getCategoryName } = await getCategoryByName(getCookie("email"), categoryName);
+      setCookie("categoryId", getCategoryId);
+      setCookie("categoryName", getCategoryName);
+    } catch (e) {
+      toast({
+        title: "Please login first.",
+        status: 'error',
+        position: 'top',
+        duration: 2000,
+        isClosable: true,
+      })
+      router.push('/login');
+    }
+  }
+  
+  const switchToVocabPage = async (e: React.MouseEvent<HTMLElement>, page: string) => {
     e.preventDefault();
-    Router.push(
-      {
-        pathname: `/category/${page}`
-      }
-    )
+
+    await getCategory(page);
+
+    router.push(`/category/${page}`);
+  }
+
+  const handleLogout = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    router.push('/login');
   }
 
   useEffect(() => {
@@ -91,11 +126,10 @@ export const Navbar: React.FC = () => {
                 <MenuList minWidth='130px'>
                   <MenuGroup >
                     {
-                      (categoryList.length === 0) ?
-                        <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}><Spinner /></MenuItem> :
-                        categoryList.map((category: CategoryInterface) =>
-                          <MenuItem _hover={{ bg: 'blue.500', color: 'white' }} onClick={(e) => switchToVocabPage(e, category.categoryName)}>{category.categoryName}</MenuItem>
-                        )
+                      (categoryList.length !== 0) &&
+                      categoryList.map((category: CategoryInterface) =>
+                        <MenuItem _hover={{ bg: 'blue.500', color: 'white' }} onClick={(e) => switchToVocabPage(e, category.categoryName)}>{category.categoryName}</MenuItem>
+                      )
                     }
                     {/* <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-1</MenuItem>
                     <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Category-2</MenuItem>
@@ -136,7 +170,7 @@ export const Navbar: React.FC = () => {
                     <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Guide</MenuItem>
                     <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>About</MenuItem>
                     <MenuDivider />
-                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }}>Logout</MenuItem>
+                    <MenuItem _hover={{ bg: 'blue.500', color: 'white' }} onClick={handleLogout}>Logout</MenuItem>
                   </MenuGroup>
                 </MenuList>
               </Menu>

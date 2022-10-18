@@ -1,4 +1,4 @@
-import { Button, Center, CloseButton, Flex, IconButton, Spinner } from "@chakra-ui/react";
+import { Button, Center, CloseButton, Flex, IconButton, Spinner, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { Navbar } from "../components/navbar"
 import { SearchCard } from "../components/search-card";
@@ -6,15 +6,17 @@ import { Text } from "@chakra-ui/react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import { getSearchList } from "../api/api_utils";
-import { VocabularyInterface } from "../interface";
+import { SearchInterface, VocabularyInterface } from "../interface";
+import { getCookies, getCookie } from "typescript-cookie";
 
 const SearchPage = () => {
     const router = useRouter();
     const [pageNum, setPageNum] = useState(1);
     const [nextOrPrev, setNextOrPrev] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [searchedList, setSearchedList] = useState<VocabularyInterface[]>([]);
+    const [searchedList, setSearchedList] = useState<SearchInterface[]>([]);
     const [totalPages, setTotalPages] = useState<number[]>([]);
+    const toast = useToast();
 
     const handleClose = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
@@ -33,14 +35,29 @@ const SearchPage = () => {
 
     const fetchSearch = async (vocab: string) => {
         setIsLoading(isLoading => isLoading = false);
-        const { searchedVocabList, vocabPages } = await getSearchList(0, vocab);
+        try {
+            const { searchedVocabList, vocabPages } = await getSearchList(0, vocab, getCookie("email"));
+    
+            setIsLoading(isLoading => isLoading = true);
+            setSearchedList(searchedList => searchedList = searchedVocabList);
+            setTotalPages(totalPages => totalPages = vocabPages);
+        } catch (e) {
+            toast({
+                title: "Please login first.",
+                status: 'error',
+                position: 'top',
+                duration: 2000,
+                isClosable: true,
+            })
 
-        setIsLoading(isLoading => isLoading = true);
-        setSearchedList(searchedList => searchedList = searchedVocabList);
-        setTotalPages(totalPages => totalPages = vocabPages);
+            router.push('/login');
+        }
     }
 
     useEffect(() => {
+        if (getCookies() === null || getCookie('email') == undefined || getCookie('email') == null) 
+            router.push('/login');
+            
         fetchSearch(router.query.word as string);
     }, [])
 
@@ -52,12 +69,13 @@ const SearchPage = () => {
                 <Center p={6} m={4} width='70%' borderRadius='md' flexDir='column'>
                     <Text letterSpacing={'wide'} m={6} fontSize={'2xl'} fontWeight='bold' color={'blue.700'}>Search Result</Text>
                     {isLoading ?
-                        searchedList.map((searchedWord: VocabularyInterface) =>
-                            //TODO: Change parentCategoryId => parentCategoryName
+                        searchedList.map((searchedWord: SearchInterface) =>
                             <SearchCard
+                                key={searchedWord.parentCategoryName}
                                 word={searchedWord.word}
                                 definition={searchedWord.definition}
-                                parentCategory={searchedWord.parentCategory}
+                                parentCategoryId={searchedWord.parentCategoryId}
+                                parentCategoryName={searchedWord.parentCategoryName}
                             />
                         ) :
                         <Spinner

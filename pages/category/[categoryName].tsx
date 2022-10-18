@@ -1,4 +1,4 @@
-import { Box, Button, Center, Collapse, Divider, Flex, FormControl, FormLabel, IconButton, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuItemOption, MenuList, MenuOptionGroup, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Skeleton, Spinner, Tooltip, useDisclosure } from "@chakra-ui/react";
+import { Box, Button, Center, Collapse, Divider, Flex, FormControl, FormLabel, IconButton, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuItemOption, MenuList, MenuOptionGroup, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Skeleton, Spinner, Tooltip, useDisclosure, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { Navbar } from "../../components/navbar"
 import { Text } from "@chakra-ui/react";
@@ -9,6 +9,7 @@ import { createVocab, deleteVocab, editVocab, editVocab as editWord, editVocabRa
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { VocabularyInterface } from "../../interface";
 import { InferGetStaticPropsType } from 'next'
+import { getCookie, getCookies } from "typescript-cookie";
 
 
 const VocabularyPage = () => {
@@ -26,6 +27,7 @@ const VocabularyPage = () => {
     const inputDef = useRef() as MutableRefObject<HTMLInputElement>;  // input Definition
     const [isLoading, setIsLoading] = useState(false);
     const [addButtonLoad, setAddButtonLoad] = useState(false);
+    const toast = useToast();
 
     const toggleRank = () => setRank(isRank => isRank = !isRank);
 
@@ -37,73 +39,147 @@ const VocabularyPage = () => {
     const toggleView = () => setView(isView => isView = !isView);
 
     const fetchAllVocab = async () => {
+        const categoryId = getCookie("categoryId");
+        console.log(categoryId);
         setIsLoading(isLoading => isLoading = false);
-        const { allVocabList, vocabPages } = await getAllVocab(pageNum - 1);
+        try {
+            const { allVocabList, vocabPages } = await getAllVocab(pageNum - 1, categoryId);
 
-        setIsLoading(isLoading => isLoading = true);
-        setVocabList(vocabList => vocabList = allVocabList);
-        setTotalPages(totalPages => totalPages = vocabPages);
+            setIsLoading(isLoading => isLoading = true);
+            setVocabList(vocabList => vocabList = allVocabList);
+            setTotalPages(totalPages => totalPages = vocabPages);
+        } catch (e) {
+            toast({
+                title: "Please login first.",
+                status: 'error',
+                position: 'top',
+                duration: 2000,
+                isClosable: true,
+            })
+        }
     }
 
     const fetchVocabByRankLV = async (rankLV: number) => {
         setIsLoading(isLoading => isLoading = false);
-        const { vocabByRankLVList, vocabPages } = await getVocabByRankLV(pageNum - 1, rankLV);
+        try {
+            const { vocabByRankLVList, vocabPages } = await getVocabByRankLV(pageNum - 1, rankLV, getCookie("categoryId"));
 
-        setIsLoading(isLoading => isLoading = true);
-        setVocabList(vocabList => vocabList = vocabByRankLVList);
-        setTotalPages(totalPages => totalPages = vocabPages);
+            setIsLoading(isLoading => isLoading = true);
+            setVocabList(vocabList => vocabList = vocabByRankLVList);
+            setTotalPages(totalPages => totalPages = vocabPages);
+        } catch (e) {
+            toast({
+                title: "Please login first.",
+                status: 'error',
+                position: 'top',
+                duration: 2000,
+                isClosable: true,
+            })
+        }
     }
 
     const deleteWord = async (wordId: string) => {
-        await deleteVocab(wordId);
+        try {
+            await deleteVocab(wordId);
 
-        if (isRank === false)   // All Vocab
-            fetchAllVocab();
-        else
-            fetchVocabByRankLV(rankNum);
+            if (isRank === false)   // All Vocab
+                fetchAllVocab();
+            else
+                fetchVocabByRankLV(rankNum);
+        } catch (e) {
+            toast({
+                title: "Please login first.",
+                status: 'error',
+                position: 'top',
+                duration: 2000,
+                isClosable: true,
+            })
+
+            router.push('/login');
+        }
     }
 
     const addWord = async (word: string, definition: string) => {
         if (word !== '' && definition !== '') {
             setAddButtonLoad(addButtonLoad => addButtonLoad = true);
+            try {
+                await createVocab(word, definition, getCookie("email"), getCookie("categoryId"));
+                fetchAllVocab();
 
-            await createVocab(word, definition);
-            fetchAllVocab();
+                //clean up input field
+                inputWord.current.value = '';
+                inputDef.current.value = '';
+                // fetch all vocab
+                setRank(isRank => isRank = false);
 
-            //clean up input field
-            inputWord.current.value = '';
-            inputDef.current.value = '';
-            // fetch all vocab
-            setRank(isRank => isRank = false);
+                onClose();
+                setAddButtonLoad(addButtonLoad => addButtonLoad = false);
+            } catch (e) {
+                toast({
+                    title: "Please login first.",
+                    status: 'error',
+                    position: 'top',
+                    duration: 2000,
+                    isClosable: true,
+                })
 
-            onClose();
-            setAddButtonLoad(addButtonLoad => addButtonLoad = false);
+                router.push('/login');
+            }
         }
     }
 
     const editWord = async (wordId: string, word: string, definition: string) => {
-        await editVocab(wordId, word, definition);
+        try {
+            await editVocab(wordId, word, definition);
 
-        if (isRank === false)   // All Vocab
-            fetchAllVocab();
-        else
-            fetchVocabByRankLV(rankNum);
+            if (isRank === false)   // All Vocab
+                fetchAllVocab();
+            else
+                fetchVocabByRankLV(rankNum);
+        } catch (e) {
+            toast({
+                title: "Please login first.",
+                status: 'error',
+                position: 'top',
+                duration: 2000,
+                isClosable: true,
+            })
+
+            router.push('/login');
+        }
     }
 
     const editRankLV = async (wordId: string, rankLV: number) => {
-        await editVocabRankLV(wordId, rankLV);
+        try {
+            await editVocabRankLV(wordId, rankLV);
 
-        if (isRank === false)   // All Vocab
-            fetchAllVocab();
-        else
-            fetchVocabByRankLV(rankNum);
+            if (isRank === false)   // All Vocab
+                fetchAllVocab();
+            else
+                fetchVocabByRankLV(rankNum);
+        } catch (e) {
+            toast({
+                title: "Please login first.",
+                status: 'error',
+                position: 'top',
+                duration: 2000,
+                isClosable: true,
+            })
+
+            router.push('/login');
+        }
     }
 
     useEffect(() => {
-        if (isRank === false)   // All Vocab
-            fetchAllVocab();
-        else
-            fetchVocabByRankLV(rankNum);
+        if (getCookies() === null || getCookie('email') == undefined || getCookie('email') == null)
+            router.push('/login');
+        else {
+
+            if (isRank === false)   // All Vocab
+                fetchAllVocab();
+            else
+                fetchVocabByRankLV(rankNum);
+        }
     }, [rankNum, isRank, pageNum])
 
     const goToPage = (num: number) => {
@@ -118,7 +194,10 @@ const VocabularyPage = () => {
 
     const goToTest = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
-        router.push('/quiz')
+        router.push({
+            pathname: '/quiz',
+            query: { categoryName: router.query.categoryName }
+        }, '/quiz');
     }
 
     return (
@@ -238,19 +317,5 @@ const VocabularyPage = () => {
         </div>
     )
 }
-
-// export const getStaticPaths: GetStaticPaths = async () => {
-//     // const allCategories = await getAllCategories();
-//     // const allPaths = allCategories.map(category => ({
-//     //     params: {categoryId: category.id}
-//     // }))
-//     return {
-//         // paths: allPaths,
-//         paths: [
-//             { params: { categoryName: 'Default' } }
-//         ],
-//         fallback: false
-//     }
-// }
 
 export default VocabularyPage;

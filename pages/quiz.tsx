@@ -1,4 +1,4 @@
-import { Button, Center, CloseButton, Flex, IconButton, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup } from "@chakra-ui/react";
+import { Button, Center, CloseButton, Flex, IconButton, Menu, MenuButton, MenuItemOption, MenuList, MenuOptionGroup, useToast } from "@chakra-ui/react";
 import { Navbar } from "../components/navbar"
 import { PreTest } from "../components/pre-test";
 import { Text } from "@chakra-ui/react";
@@ -9,16 +9,22 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getQuizList } from "../api/api_utils";
 import { VocabularyInterface } from "../interface";
+import { getCookies, getCookie } from "typescript-cookie";
 
 const QuizPage = () => {
     const router = useRouter();
     const [testStatus, setTestStatus] = useState('pre-test');
     const [quizList, setQuizList] = useState<VocabularyInterface[]>([]);
     const [wrongAnsList, setWrongAnsList] = useState<VocabularyInterface[]>([]);
+    const toast = useToast();
 
     const handleClose = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
-        await router.push('/category/1');
+        const categoryName = router.query.categoryName;
+        await router.push({
+            pathname: `/category/${categoryName}`,
+            query: {categoryId: getCookie("categoryId")}
+        }, `/category/${categoryName}`);
         setTestStatus(testStatus => testStatus = 'pre-test');
     }
 
@@ -27,14 +33,30 @@ const QuizPage = () => {
     const endTest = () => setTestStatus(testStatus => testStatus = 'post-test');
 
     const fetchQuizList = async (rankLV: number, wordNum: number) => {
-        const getQuiz = await getQuizList(rankLV, wordNum);
-        setQuizList(quizList => quizList = getQuiz);
+        try {
+            const getQuiz = await getQuizList(rankLV, wordNum, getCookie("categoryId"));
+            setQuizList(quizList => quizList = getQuiz);
+    
+            startTest();
+        } catch (e) {
+            toast({
+                title: "Please login first.",
+                status: 'error',
+                position: 'top',
+                duration: 2000,
+                isClosable: true,
+            })
 
-        startTest();
+            router.push('/login');
+        }
     }
 
     const updateWrongAnsList = (wrongAns: VocabularyInterface) => setWrongAnsList(wrongAnsList => [...wrongAnsList, wrongAns]);
 
+    useEffect(() => {
+        if (getCookies() === null || getCookie('email') == undefined || getCookie('email') == null) 
+            router.push('/login');
+    }, [])
 
     return (
         <div>

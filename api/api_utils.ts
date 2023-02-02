@@ -8,7 +8,7 @@ import { CategoryInterface } from "../interface";
 export const getAllVocab = async (offset: number, categoryId: string | undefined) => {
     try {
         const response = await axios.get(
-            `https://vocaliz-azure.azurewebsites.net/allWords/${categoryId}/${offset}/10`, {
+            `http://localhost:8080/allWords/${categoryId}/${offset}/10`, {
             headers: {
                 'Authorization': 'Bearer ' + getCookie("token"),
             }
@@ -31,7 +31,7 @@ export const getAllVocab = async (offset: number, categoryId: string | undefined
 export const getVocabByRankLV = async (offset: number, rankLV: number, categoryId: string | undefined) => {
     try {
         const response = await axios.get(
-            `https://vocaliz-azure.azurewebsites.net/rankLVWords/${categoryId}/${rankLV}/${offset}/10`, {
+            `http://localhost:8080/rankLVWords/${categoryId}/${rankLV}/${offset}/10`, {
                 headers: {
                     'Authorization': 'Bearer ' + getCookie("token"),
                 }
@@ -54,7 +54,7 @@ export const getVocabByRankLV = async (offset: number, rankLV: number, categoryI
 export const deleteVocab = async (wordId: string) => {
     try {
         await axios.delete(
-            `https://vocaliz-azure.azurewebsites.net/word/${wordId}`, {
+            `http://localhost:8080/word/${wordId}`, {
                 headers: {
                     'Authorization': 'Bearer ' + getCookie("token"),
                 }
@@ -68,7 +68,7 @@ export const deleteVocab = async (wordId: string) => {
 export const createVocab = async (word: string, definition: string, email: string | undefined, categoryId: string | undefined) => {
     try {
         await axios.post(
-            `https://vocaliz-azure.azurewebsites.net/word/${email}/${categoryId}`,
+            `http://localhost:8080/word/${email}/${categoryId}`,
             {
                 word: word,
                 definition: definition
@@ -87,7 +87,7 @@ export const createVocab = async (word: string, definition: string, email: strin
 export const editVocab = async (wordId: string, word: string, definition: string) => {
     try {
         await axios.put(
-            `https://vocaliz-azure.azurewebsites.net/word/${wordId}`,
+            `http://localhost:8080/word/${wordId}`,
             {
                 word: word,
                 definition: definition
@@ -106,7 +106,7 @@ export const editVocab = async (wordId: string, word: string, definition: string
 export const editVocabRankLV = async (wordId: string, rankLV: number) => {
     try {
         await axios.put(
-            `https://vocaliz-azure.azurewebsites.net/editRankLV/${wordId}`,
+            `http://localhost:8080/editRankLV/${wordId}`,
             {
                 rankLV: rankLV
             }, 
@@ -127,7 +127,7 @@ export const editVocabRankLV = async (wordId: string, rankLV: number) => {
 export const getAllCategories = async (email: string | undefined) => {
     try {
         const response = await axios.get(
-            `https://vocaliz-azure.azurewebsites.net/category/allCategories/${email}`, {
+            `http://localhost:8080/category/allCategories/${email}`, {
             headers: {
                 'Authorization': 'Bearer ' + getCookie("token"),
             }
@@ -143,7 +143,7 @@ export const getAllCategories = async (email: string | undefined) => {
 export const createCategory = async (categoryName: string, email: string | undefined) => {
     try {
         await axios.post(
-            `https://vocaliz-azure.azurewebsites.net/category/${email}`,
+            `http://localhost:8080/category/${email}`,
             {
                 categoryName: categoryName
             }, 
@@ -161,7 +161,7 @@ export const createCategory = async (categoryName: string, email: string | undef
 export const renameCategory = async (categoryName: string, categoryId: string) => {
     try {
         await axios.put(
-            `https://vocaliz-azure.azurewebsites.net/category/rename/${categoryId}`,
+            `http://localhost:8080/category/rename/${categoryId}`,
             {
                 newCategoryName: categoryName
             }, 
@@ -179,7 +179,7 @@ export const renameCategory = async (categoryName: string, categoryId: string) =
 export const deleteACategory = async (categoryId: string) => {
     try {
         await axios.delete(
-            `https://vocaliz-azure.azurewebsites.net/category/${categoryId}`,
+            `http://localhost:8080/category/${categoryId}`,
             {
                 headers: {
                     'Authorization': 'Bearer ' + getCookie("token"),
@@ -194,7 +194,7 @@ export const deleteACategory = async (categoryId: string) => {
 export const getCategoryByName = async (email: string | undefined, categoryName: string) => {
     try {
         const response = await axios.get(
-            `https://vocaliz-azure.azurewebsites.net/category/getCategoryByName/${email}/${categoryName}`,
+            `http://localhost:8080/category/getCategoryByName/${email}/${categoryName}`,
             {
                 headers: {
                     'Authorization': 'Bearer ' + getCookie("token"),
@@ -217,7 +217,7 @@ export const getCategoryByName = async (email: string | undefined, categoryName:
 export const getQuizList = async (rankLV: number, wordNum: number, categoryId: string | undefined) => {
     try {
         const response = await axios.get(
-            `https://vocaliz-azure.azurewebsites.net/quizWords/${categoryId}?rankLV=${rankLV}&wordNum=${wordNum}`, {
+            `http://localhost:8080/quizWords/${categoryId}?rankLV=${rankLV}&wordNum=${wordNum}`, {
                 headers: {
                     'Authorization': 'Bearer ' + getCookie("token"),
                 }
@@ -236,7 +236,7 @@ export const getQuizList = async (rankLV: number, wordNum: number, categoryId: s
 export const getSearchList = async (offset: number, vocab: string, email: string | undefined) => {
     try {
         const response = await axios.get(
-            `https://vocaliz-azure.azurewebsites.net/search/${email}/${offset}/10?word=${vocab}`, {
+            `http://localhost:8080/search/${email}/${offset}/10?word=${vocab}`, {
                 headers: {
                     'Authorization': 'Bearer ' + getCookie("token"),
                 }
@@ -262,7 +262,7 @@ export const getSearchList = async (offset: number, vocab: string, email: string
 
 export const signUp = async (email: string, password: string, name: string) => {
     await axios.post(
-        `https://vocaliz-azure.azurewebsites.net/verification/signup`,
+        `http://localhost:8080/verification/signup`,
         {
             email: email,
             password: password,
@@ -273,20 +273,20 @@ export const signUp = async (email: string, password: string, name: string) => {
 
 export const verifyCode = async (email: string, code: string) => {
     await axios.put(
-        `https://vocaliz-azure.azurewebsites.net/verification/verify/${email}/${code}`
+        `http://localhost:8080/verification/verify/${email}/${code}`
     )
 }
 
 export const resendCodeMail = async (email: string) => {
     await axios.post(
-        `https://vocaliz-azure.azurewebsites.net/verification/resendCode/${email}`
+        `http://localhost:8080/verification/resendCode/${email}`
     )
 }
 
 
 export const login = async (email: string, password: string) => {
     const response = await axios.post(
-        `https://vocaliz-azure.azurewebsites.net/verification/login`,
+        `http://localhost:8080/verification/login`,
         {
             email: email,
             password: password
@@ -297,13 +297,13 @@ export const login = async (email: string, password: string) => {
 
 export const forgotPassword = async (email: string) => {
     const response = await axios.post(
-        `https://vocaliz-azure.azurewebsites.net/verification/randomPassword/${email}`
+        `http://localhost:8080/verification/randomPassword/${email}`
     )
 }
 
 export const resetPassword = async (password: string, newPassword: string, email: string) => {
     await axios.post(
-        `https://vocaliz-azure.azurewebsites.net/verification/resetPassword`,
+        `http://localhost:8080/verification/resetPassword`,
         {
             password: password,
             newPassword: newPassword,

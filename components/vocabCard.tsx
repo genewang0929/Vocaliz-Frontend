@@ -68,7 +68,7 @@ export const VocabCard: React.FC<{ isView: boolean, id: string, word: string, de
                 {/* Modify Rank */}
                 <Popover placement='top'>
                     <PopoverTrigger>
-                        <IconButton icon={<StarIcon color={rankLVColor} />} aria-label={"rank"} bg='white'></IconButton>
+                        <IconButton icon={<StarIcon color={rankLVColor()} />} aria-label={"rank"} bg='white'></IconButton>
                     </PopoverTrigger>
                     <PopoverContent>
                         <PopoverArrow />

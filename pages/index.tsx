@@ -1,12 +1,12 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { getCookies, getCookie } from 'typescript-cookie'
 import styles from '../styles/Home.module.css'
 import LoginPage from './login'
-import { getCookie, getCookies } from "typescript-cookie";
 import CategoryPage from './category'
-import { useEffect } from 'react'
-import { useRouter } from 'next/router'
 
 const Home: NextPage = () => {
   const router = useRouter();

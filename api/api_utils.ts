@@ -3,7 +3,7 @@ import axios from "axios"
 import { getCookie, setCookie } from "typescript-cookie";
 import { CategoryInterface } from "../interface";
 
-const API_URL = "ec2-54-226-150-135.compute-1.amazonaws.com:8080";
+const API_URL = "localhost:8080";
 
 /* -----------------Vocabulary APIs----------------- */
 

@@ -4,21 +4,21 @@ Vocaliz optimizes your vocabulary learning experience with multiple features, in
 
 ## Key Features
 
-**Category:** Allow users to study vocabularies based on multiple purposes.
+- **Category:** Allow users to study vocabularies based on multiple purposes.
 
-**Vocabulary Overview:** Paginated vocabulary words list. Also available to filter the list by rank. On each vocabulary word card, include "See Answer", "Edit", "Delete" features for individual usage.
+- **Vocabulary Overview:** Paginated vocabulary words list. Also available to filter the list by rank. On each vocabulary word card, include "See Answer", "Edit", "Delete" features for individual usage.
 
-**Rank-based design:** Rank refers to the familarity a user has with a vocab word. The app provides up to 3 levels of rank for users to pinpoint words with same familarity
+- **Rank-based design:** Rank refers to the familarity a user has with a vocab word. The app provides up to 3 levels of rank for users to pinpoint words with same familarity
 
-**Quiz:** Test user's ability to come up with vocabulary meanings in x seconds (customizable). Vocabulary words used in quiz would be selected from a curated vocabulary list.
+- **Quiz:** Test user's ability to come up with vocabulary meanings in x seconds (customizable). Vocabulary words used in quiz would be selected from a curated vocabulary list.
 
-**Search:** Search a word's meaning.
+- **Search:** Search a word's meaning.
 
 
 ## Tech Stack
-**Frontend:** Next.js, TypeScript, HTML, CSS
-**Backend:** Spring Boot, Java
-**Cloud:** Docker, AWS Elastic Bean, AWS S3, AWS CodePipeline
+- **Frontend:** Next.js, TypeScript, HTML, CSS
+- **Backend:** Spring Boot, Java
+- **Cloud:** Docker, AWS Elastic Bean, AWS S3, AWS CodePipeline
 
 
 ## Motivation
